@@ -1,0 +1,233 @@
+version: '3'
+
+services:
+
+
+  worker_api:
+    image: worker_api:latest
+    container_name: WorkerService
+    build:
+      context: Worker
+      dockerfile: Dockerfile
+    command: poetry run uvicorn main:app --host 0.0.0.0 --port 9998 --reload
+    env_file:
+      - .env
+    volumes:
+      - ./Worker:/opt/app
+    networks:
+      - application_network
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
+    depends_on:
+      worker_rabbit:
+        condition: service_healthy
+      smtp:
+        condition: service_started
+
+  ws:
+    container_name: ws
+    command: uvicorn main:app --host 0.0.0.0 --port 9992 --reload
+    ports:
+      - '9992:9992'
+    env_file:
+      - .env
+    build:
+      context: WebSocket
+      dockerfile: Dockerfile
+    volumes:
+      - ./WebSocket/src:/src
+    networks:
+      - application_network
+
+
+#______________Auth_______________
+  auth_api:
+    container_name: AuthAPI
+    command: uvicorn main:app --host 0.0.0.0 --port 9999 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /src
+    volumes:
+      - ./AuthAPI:/src
+    build:
+      context: AuthAPI
+      dockerfile: Dockerfile
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - application_network
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
+
+  auth_jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: auth_jaeger
+    ports:
+      - '6831:6831/udp'
+      - '16686:16686'
+    depends_on:
+      - auth_api
+      - nginx
+    networks:
+      - application_network
+
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
+
+#_____________admin______________
+
+  app:
+    build:
+      context: DjangoAdmin
+      dockerfile: Dockerfile
+    container_name: django_admin
+    command: gunicorn config.asgi:application --config config/gunicorn_config.py
+    environment:
+      PYTHONPATH: /app
+    expose:
+      - 8003
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      cinema_postgres:
+        condition: service_started
+    networks:
+      - application_network
+
+
+#_____________content______________
+  cinema_api:
+    container_name: cinema_api
+    image: cinema_api
+    command: gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8002 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app/src
+      ES_HOST: ${ES_HOST}
+      ES_PORT: ${ES_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+    ports:
+      - '8012:8002'
+    build:
+      context: CinemaAPI
+      dockerfile: Dockerfile
+    volumes:
+      - ./CinemaAPI/src:/app
+    depends_on:
+      cinema_postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      elasticsearch:
+        condition: service_started
+    networks:
+      - application_network
+
+  file_api:
+    container_name: file_api
+    command: gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:7070 --reload
+    env_file:
+      - .env
+    build:
+      context: FileAPI
+      dockerfile: Dockerfile
+    #ports:
+    #  - "7070:7070"
+    expose:
+      - 7070
+    depends_on:
+      file_postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    volumes:
+      - ./FileAPI/src:/src
+    networks:
+      - application_network
+
+  etl:
+    container_name: etl
+    build:
+      context: ETL
+      dockerfile: dockerfile
+    command: python3 main.py
+    depends_on:
+      cinema_postgres:
+        condition: service_started
+      elasticsearch:
+        condition: service_started
+      redis:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /src
+      DB_NAME: ${CINEMA_POSTGRES_NAME}
+      DB_USER: ${CINEMA_POSTGRES_USER}
+      DB_PASSWORD: ${CINEMA_POSTGRES_PASSWORD}
+      DB_HOST: ${CINEMA_POSTGRES_HOST}
+      DB_PORT: ${CINEMA_POSTGRES_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_DB: ${REDIS_DB}
+      ES_HOST: ${ES_HOST}
+      ES_PORT: ${ES_PORT}
+    volumes:
+      - ./ETL:/src
+    networks:
+      - application_network
+
+#______________Nginx_______________
+  nginx:
+    image: nginx:1.19.2
+    container_name: nginx
+    volumes:
+      - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./Nginx/auth_api.conf:/etc/nginx/conf.d/auth_api.conf:ro
+      - ./Nginx/worker_api.conf:/etc/nginx/conf.d/worker_api.conf:ro
+      - ./Nginx/websocket.conf:/etc/nginx/conf.d/websocket.conf:ro
+      - ./Nginx/file_api.conf:/etc/nginx/conf.d/file_api.conf:ro
+      - ./Nginx/django_admin.conf:/etc/nginx/conf.d/django_admin.conf:ro
+      - ./Nginx/cinema_api.conf:/etc/nginx/conf.d/cinema_api.conf:ro
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      auth_api:
+        condition: service_started
+      worker_api:
+        condition: service_started
+      reviews_api:
+        condition: service_started
+      file_api:
+        condition: service_started
+      cinema_api:
+        condition: service_started
+      app:
+        condition: service_started
+    ports:
+      - "8001:8001"
+      - "2080:2080"
+      - "8002:8002"
+      - "8003:8003"
+      - "8007:8007"
+      - "8008:8008"
+      - "8009:8009"
+      - "3003:3003"
+      - "7070:7070"
+    networks:
+      - application_network
+
+
+
+networks:
+  application_network:
