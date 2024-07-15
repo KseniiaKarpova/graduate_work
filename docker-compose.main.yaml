@@ -44,13 +44,14 @@ services:
 #______________Auth_______________
   auth_api:
     container_name: AuthAPI
-    command: uvicorn main:app --host 0.0.0.0 --port 9999 --reload
+    command: poetry run uvicorn main:app --host 0.0.0.0 --port 9999 --reload
+    entrypoint: /usr/local/bin/entrypoint.sh
     env_file:
       - .env
     environment:
       PYTHONPATH: /src
     volumes:
-      - ./AuthAPI:/src
+      - ./AuthAPI:/opt/app
     build:
       context: AuthAPI
       dockerfile: Dockerfile
@@ -78,6 +79,21 @@ services:
     mem_limit: 512m
     mem_reservation: 128M
     cpus: 0.5
+  
+  smtp:
+    image: mailhog/mailhog:latest
+    container_name: smtp_server
+    platform: linux/amd64
+    env_file:
+      - .env
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"
+    networks:
+      - application_network
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
 
 #_____________admin______________
 
@@ -94,6 +110,7 @@ services:
     env_file:
       - .env
     volumes:
+      - ./DjangoAdmin:/app
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     depends_on:
@@ -205,8 +222,6 @@ services:
       auth_api:
         condition: service_started
       worker_api:
-        condition: service_started
-      reviews_api:
         condition: service_started
       file_api:
         condition: service_started

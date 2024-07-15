@@ -105,12 +105,3 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     return JSONResponse(
         status_code=exc.status_code, content={
             "detail": exc.message})
-
-
-if __name__ == '__main__':
-    uvicorn.run(
-        app,
-        log_config=logger.LOGGING,
-        log_level=logging.DEBUG,
-        reload=True,
-    )

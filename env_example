@@ -92,6 +92,8 @@ SENDGRID_API=12dhqz228dncoqz/rn
 
 S3_USER=adminS3
 S3_PASSWORD=adminS3pass
+S3_HOST=minio
+S3_PORT=9000
 
 OBS_TYPE=postgresql+asyncpg
 

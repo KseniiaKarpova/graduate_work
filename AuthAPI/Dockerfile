@@ -25,6 +25,10 @@ RUN groupadd -r $APP_USER && \
     mkdir $LOGS_DIR && \
     chown $APP_USER:$APP_USER -R $SRC_DIR
 
+
+COPY /entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 USER $APP_USER
 
 # Установка зависимостей
@@ -43,4 +47,3 @@ COPY ./ $APP_DIR
 
 EXPOSE 3000
 
-COPY /entrypoint.sh /usr/local/bin/entrypoint.sh

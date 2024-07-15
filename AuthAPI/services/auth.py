@@ -28,7 +28,7 @@ class AuthService(BaseService):
             'login': data.login,
             'email': data.email,
         })
-        await self.broadcast.send_email(user_id=user.uuid)
+        #await self.broadcast.send_email(user_id=user.uuid)
         await self.storage.add_and_commit([user])
         return user_created
 

@@ -106,3 +106,5 @@ class UserData(BaseModel):
     email: str
     name: str | None
     surname: str | None
+    roles: list = None
+    is_superuser: bool | None = Field(None)

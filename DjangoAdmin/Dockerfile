@@ -26,4 +26,10 @@ RUN  mkdir -p /var/www/static/ \
 
 COPY . /app
 ENV DJANGO_SETTINGS_MODULE 'config.settings'
-RUN chown www-data:www-data /var/log
+RUN chown www-data:www-data /var/log && \
+     python3 manage.py collectstatic --no-input --clear && \
+     python3 manage.py makemigrations users && \
+     python3 manage.py migrate users --no-input && \
+     python3 manage.py makemigrations movies && \
+     python3 manage.py migrate movies --no-input && \
+     python manage.py createsuperuser --noinput || true

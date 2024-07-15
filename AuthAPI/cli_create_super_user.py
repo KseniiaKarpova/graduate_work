@@ -21,7 +21,6 @@ def create(login: str, password: str, email: str):
         try:
             postgres.async_engine = create_async_engine(
                 settings.db_dsn,
-                poolclass=QueuePool,
                 pool_pre_ping=True, pool_size=20, pool_timeout=30)
 
             postgres.async_session_factory = sessionmaker(

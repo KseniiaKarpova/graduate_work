@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import Depends
 from services import BaseService
 from storages.user import UserStorage
-from schemas.auth import UserUpdate
+from schemas.auth import UserUpdate, UserData
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.postgres import create_async_session
 from exceptions import not_found, user_updated
@@ -14,12 +14,19 @@ class UserService(BaseService):
         self.storage = storage
 
     async def get_user(self, uuid: UUID):
-        user = await self.storage.get(conditions={
+        user, roles = await self.storage.with_roles(conditions={
             'uuid': uuid
         })
         if not user:
             raise not_found
-        return user
+        return UserData(
+            uuid=user.uuid,
+            email=user.email,
+            name=user.name,
+            surname=user.surname,
+            roles=roles,
+            is_superuser=user.is_superuser
+        )
 
     async def get_users(self):
         users = await self.storage.get_all_users()

@@ -102,9 +102,10 @@ class AlchemyBaseStorage(ABC):
         INSERT record
         """
         instance = self.table(**params)
-        if self.commit_mode is True:
+        if self.commit_mode == True:
             self.session.add(instance)
             await commit_async_session(session=self.session)
+            print('###########')
             return instance
         return instance
 

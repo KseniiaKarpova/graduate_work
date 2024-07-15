@@ -89,18 +89,6 @@ services:
     networks:
       - application_network
 
-  data_transfer_sqlite_to_pg:
-    build:
-      context: data_transfer_sqlite_to_pg
-      dockerfile: Dockerfile
-    container_name: data_transfer
-    ports:
-      - "8877:8877"
-    env_file:
-      - .env
-    networks:
-      - application_network
-
   file_postgres:
     image: postgres:15.5-alpine3.19
     container_name: postgres_file_api

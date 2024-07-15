@@ -1,6 +1,6 @@
 import uuid
 
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -9,7 +9,7 @@ from .managers import MyUserManager
 # Create your models here.
 
 
-class User(AbstractBaseUser):
+class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(
         verbose_name='email address',
@@ -17,6 +17,7 @@ class User(AbstractBaseUser):
         unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     created = models.DateTimeField(_('created'), auto_now_add=True)
@@ -24,10 +25,9 @@ class User(AbstractBaseUser):
 
     # строка с именем поля модели, которая используется в качестве уникального
     # идентификатора
-    USERNAME_FIELD = 'email'
 
     # менеджер модели
-    objects = MyUserManager()
+    #objects = MyUserManager()
 
     def __str__(self):
         return f'{self.email} {self.id}'
