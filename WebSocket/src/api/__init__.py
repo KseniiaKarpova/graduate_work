@@ -17,7 +17,7 @@ router = APIRouter(tags=['Send message'])
 async def send_message(
     data: SendMessageSchema = Body(),
     ws_service: ConnectionManager = Depends(get_manager),
-    jwt_handler: JwtHandler = Depends(require_access_token),
+    #jwt_handler: JwtHandler = Depends(require_access_token),
 ):
-    await jwt_handler.get_current_user()
+    #await jwt_handler.get_current_user()
     await ws_service.send_personal_message(data.user_id, data.text)

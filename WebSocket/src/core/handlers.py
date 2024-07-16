@@ -1,15 +1,16 @@
 import json
 import time
-from typing import Optional
+from typing import Optional, Annotated
 
 from core.config import settings
 from db.redis import get_redis
 from exceptions import forbidden_error, wrong_data
-from fastapi import Depends, Request
+from fastapi import Depends, Request, WebSocket, Query, Cookie, WebSocketException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt, ExpiredSignatureError
 from schemas.auth import JWTUserData
 from exceptions import unauthorized, token_expired
+
 
 
 def decode_token(token: str) -> Optional[dict]:
@@ -79,6 +80,26 @@ class JWTBearer(HTTPBearer):
         return subject, jti, type
 
 
+class WebsocketToken:
+    def __init__(self, auto_error: bool = True):
+        self.auto_error = auto_error
+
+    async def __call__(self, websocket: WebSocket):
+        # Simulate getting the token from the WebSocket query parameter
+        token = websocket.query_params.get("token")
+        if not token:
+            if self.auto_error:
+                await websocket.close(code=1008)
+            return False
+        try:
+            payload = decode_token(token)
+            return payload
+        except Exception as e:
+            if self.auto_error:
+                await websocket.close(code=1008)
+            return False
+
+
 class JwtHandler:
     def __init__(self, jwt_data: dict = None) -> None:
         self.jwt_data = jwt_data
@@ -101,3 +122,14 @@ def require_access_token(
     jwt_data: dict = Depends(JWTBearer(token_type='access'))
 ) -> JwtHandler:
     return JwtHandler(jwt_data=jwt_data)
+
+
+async def get_cookie_or_token(
+    websocket: WebSocket,
+    session: Annotated[str | None, Cookie()] = None,
+    token: Annotated[str | None, Query()] = None,
+):
+    if session is None and token is None:
+        raise WebSocketException(code=status.WS_1008_POLICY_VIOLATION)
+    return session or token
+
