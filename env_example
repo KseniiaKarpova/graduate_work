@@ -1,4 +1,5 @@
 MONGODB_URI=mongodb://mongos:27017/
+MONGODB_URI=mongodb://mongos:27017/
 MONGODB_DB_NAME=posts_db
 
 TEST_MONGODB_URI=mongodb://test_mongos:27017/
@@ -33,8 +34,8 @@ JAEGER_HOST=auth_jaeger
 JAEGER_PORT=6831
 JAEGER_ENABLE=False
 
-AUTH_GOOGLE_CLIENT_ID=
-AUTH_GOOGLE_CLIENT_SECRET=
+AUTH_GOOGLE_CLIENT_ID=560238270570-ii2itecbdi2n6f409bvi3sfqc46qglha.apps.googleusercontent.com
+AUTH_GOOGLE_CLIENT_SECRET=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
 AUTH_GOOGLE_BASE_URL='https://accounts.google.com/o/oauth2/v2/auth'
 AUTH_GOOGLE_TOKEN_URL='https://www.googleapis.com/oauth2/v4/token'
 AUTH_GOOGLE_USERINFO_URL='https://www.googleapis.com/oauth2/v1/userinfo'
@@ -77,23 +78,38 @@ SMTP_FROM_USER=someone@gmail.com
 SENDGRID_API=12dhqz228dncoqz/rn
 
 
- DEBUG=True
- SECRET_KEY=django-insecure-ndt+77vv6vvav%69w-xdz=dnybdooif#2xq2=3w0-!7p++vphz
- ALLOWED_HOSTS=app
- PG_ENGINE=django.db.backends.postgresql
- DJANGO_SUPERUSER_USERNAME=admin
- DJANGO_SUPERUSER_PASSWORD=123123
- DJANGO_SUPERUSER_EMAIL=mail@mail.ru
 
- FILE_API_HOST=file_api
- FILE_API_PORT=7070
- FILE_API_URL=/api/v1/
+AUTH_SECRET_KEY=something123456fromNozir
+AUTH_JWT_ALGORITHM=HS256
+HASHER_ALGORITHM=pbkdf2_sha256
+HASHER_ROUNDS=302122
 
+DEBUG=True
+SECRET_KEY='django-insecure-ndt+77vv6vvav%69w-xdz=dnybdooif#2xq2=3w0-!7p++vphz'
+ALLOWED_HOSTS=app,localhost
+PG_ENGINE=django.db.backends.postgresql
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_PASSWORD=admin
+DJANGO_SUPERUSER_EMAIL=admin@admin.ru
+
+FILE_API_HOST=file_api
+FILE_API_PORT=7070
+FILE_API_URL=/api/v1/
+
+REDIS_HOST=cache
+REDIS_PORT=6379
+REDIS_DB=0
 
 S3_USER=adminS3
 S3_PASSWORD=adminS3pass
 
 OBS_TYPE=postgresql+asyncpg
+
+AUTH_POSTGRES_HOST=auth_postgres
+AUTH_POSTGRES_PASSWORD=123qwe
+AUTH_POSTGRES_USER=app
+AUTH_POSTGRES_DB=auth_database
+AUTH_POSTGRES_PORT=5432
 
 CINEMA_API_PROJECT_NAME=CinemaAPI
 
@@ -102,51 +118,63 @@ CINEMA_POSTGRES_USER=app
 CINEMA_POSTGRES_PASSWORD=123qwe
 CINEMA_POSTGRES_HOST=cinema_postgres
 CINEMA_POSTGRES_PORT=5432
+
+FILE_POSTGRES_HOST=file_postgres
+FILE_POSTGRES_PORT=5432
+FILE_POSTGRES_USER=user
+FILE_POSTGRES_PASSWORD=user123
+FILE_POSTGRES_NAME=file_api
+
+    ES_PORT=9200
+    ES_HOST=elasticsearch
+    ES_INDEX=movies
+
+    REDIS_HOST=redis
+    REDIS_PORT=6379
+
+    AUTH_REDIS_DB=0
+    CINEMA_REDIS_DB=0
+    ETL_REDIS_DB=0
+    FILE_REDIS_DB=0
+
+    TEST_POSTGRES_HOST=test_postgres_db
+    TEST_POSTGRES_PASSWORD=123qwe
+    TEST_POSTGRES_USER=app
+    TEST_POSTGRES_DB=auth_db
+    TEST_POSTGRES_PORT=5432
+    TEST_REDIS_HOST=test_redis
+    TEST_REDIS_PORT=6379
+
+
+    TEST_ES_PORT=9200
+    TEST_ES_HOST=test_elasticsearch
+    TEST_ES_INDEX=movies
+    TEST_ES_ID_FIELD=_id
+    TEST_SERVICE_URL=http://test_async_api:7000
+    TEST_REDIS_HOST=test_cache
+    TEST_REDIS_PORT=6379
+
+    S3_USER=adminS3
+    S3_PASSWORD=adminS3pass
+
+    JAEGER_HOST=auth_jaeger
+    JAEGER_PORT=6831
+    JAEGER_ENABLE=False
+
+    AUTH_GOOGLE_CLIENT_ID=560238270570-ii2itecbdi2n6f409bvi3sfqc46qglha.apps.googleusercontent.com
+    AUTH_GOOGLE_CLIENT_SECRET=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
+    AUTH_GOOGLE_BASE_URL='https://accounts.google.com/o/oauth2/v2/auth'
+    AUTH_GOOGLE_TOKEN_URL='https://www.googleapis.com/oauth2/v4/token'
+    AUTH_GOOGLE_USERINFO_URL='https://www.googleapis.com/oauth2/v1/userinfo'
+    AUTH_GOOGLE_REDIRECT_URL="http://127.0.0.1:8001/api/v1/socials/auth"
+
 PG_NAME=movies_database
 PG_USER=app
 PG_PASSWORD=123qwe
 PG_HOST=postgres_admin_panel
 PG_PORT=5432
 
-FILE_POSTGRES_HOST=file_postgres
-FILE_POSTGRES_PORT=5432
-FILE_POSTGRES_USER=user
-FILE_POSTGRES_PASSWORD=user123
-FILE_POSTGRES_NAME=files
-
-ES_PORT=9200
-ES_HOST=elasticsearch
-ES_INDEX=movies
-
-
-
-
-
-AUTH_REDIS_DB=0
-CINEMA_REDIS_DB=0
-ETL_REDIS_DB=0
-FILE_REDIS_DB=0
-
-TEST_POSTGRES_HOST=test_postgres_db
-TEST_POSTGRES_PASSWORD=123qwe
-TEST_POSTGRES_USER=app
-TEST_POSTGRES_DB=auth_db
-TEST_POSTGRES_PORT=5432
-TEST_REDIS_HOST=test_redis
-TEST_REDIS_PORT=6379
-
-
-TEST_ES_PORT=9200
-TEST_ES_HOST=test_elasticsearch
-TEST_ES_INDEX=movies
-TEST_ES_ID_FIELD=_id
-TEST_SERVICE_URL=http://test_async_api:7000
-TEST_REDIS_HOST=test_cache
-TEST_REDIS_PORT=6379
-
-S3_USER=adminS3
-S3_PASSWORD=adminS3pass
-
-JAEGER_HOST=auth_jaeger
-JAEGER_PORT=6831
-JAEGER_ENABLE=False
+tts_path=./model/v1/xtts
+tts_language=ru
+tts_sample_rate=24000
+tts_name=coqui/XTTS-v2
