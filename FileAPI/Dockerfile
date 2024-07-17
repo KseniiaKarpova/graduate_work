@@ -2,9 +2,7 @@ FROM python:3.10
 
 ENV TZ=Europe/Moscow
 
-WORKDIR /app/src
-
-ENV PYTHONPATH=/app/src
+WORKDIR /app
 
 COPY requirements.txt .
 

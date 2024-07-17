@@ -1,9 +1,8 @@
 import shortuuid
 from db import AbstractStorage
 
-
 class ProxyStorage(AbstractStorage):
-    def __init__(self, object_storage, path_storage) -> None:
+    def __init__(self, object_storage , path_storage) -> None:
         self.object_storage = object_storage
         self.path_storage = path_storage
 
@@ -20,6 +19,7 @@ class ProxyStorage(AbstractStorage):
         return data
 
     async def get(self, bucket, short_name):
-        path = await self.path_storage.get(short_name)
-        result = await self.object_storage.get(bucket, path)
+        data = await self.path_storage.get(short_name)
+        result = await self.object_storage.get(bucket=bucket, path=data[0], filename=data[1])
         return result
+

@@ -5,11 +5,9 @@ from sqlalchemy import Column, DateTime, Index, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
-
 from . import MetaData
 
 metadata = MetaData()
-
 
 class Base(AsyncAttrs, DeclarativeBase):
     metadata = metadata

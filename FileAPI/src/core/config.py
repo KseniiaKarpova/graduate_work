@@ -1,9 +1,10 @@
-import os
 from logging import config as logging_config
+import os
+
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 from core.logger import LOGGING
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Применяем настройки логирования
 logging_config.dictConfig(LOGGING)
@@ -14,28 +15,20 @@ class BucketSettings(BaseSettings):
     movies_path: str = Field('movie/')
 
 
-class MinioSettings(BaseSettings):
-    host: str = ...
-    port: int = ...
-    user: str = ...
-    password: str = ...
-    model_config: str = SettingsConfigDict(env_prefix='s3_')
-
-    @property
-    def endpoint(self):
-        return f'{self.host}:{self.port}'
-
-
 class Settings(BaseSettings):
-    project_name: str = os.getenv('PROJECT_NAME', 'File API')
+    project_name: str = Field('File API', env='PROJECT_NAME')
 
-    minio: MinioSettings = MinioSettings()
-    observer_host: str = os.getenv('FILE_POSTGRES_HOST')
-    observer_port: int = os.getenv('FILE_POSTGRES_PORT')
-    observer_user: str = os.getenv('FILE_POSTGRES_USER')
-    observer_password: str = os.getenv('FILE_POSTGRES_PASSWORD')
-    observer_database: str = os.getenv('FILE_POSTGRES_NAME')
-    observer_type: str = os.getenv('OBS_TYPE')
+    minio_host: str = Field('minio', env='S3_HOST')
+    minio_port: int = Field(9000, env='S3_PORT')
+    minio_user: str = Field('adminS3', env='S3_USER')
+    minio_password: str = Field('adminS3pass', env='S3_PASSWORD')
+
+    observer_host: str = Field('postgres_file_api', env='OBSERVER_PG_HOST')
+    observer_port: int = Field('5432', env='OBSERVER_PG_PORT')
+    observer_user: str = Field('user', env='OBSERVER_PG_USER')
+    observer_password: str = Field('user123', env='OBSERVER_PG_PASSWORD')
+    observer_database: str = Field('file_api', env='OBSERVER_PG_NAME')
+    observer_type: str = Field('postgresql+asyncpg', env='OBS_TYPE')
 
 
 bucket_settings = BucketSettings()

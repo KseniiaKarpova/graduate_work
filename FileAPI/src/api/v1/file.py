@@ -1,8 +1,8 @@
-from exceptions import file_not_found, server_error
 from fastapi import APIRouter, Depends, UploadFile
-from fastapi.responses import StreamingResponse
+from exceptions import file_not_found, server_error
 from models.file import File
 from services.file import FileService, get_file_service
+from fastapi.responses import StreamingResponse
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ router = APIRouter()
 )
 async def upload_file(
         file_service: FileService = Depends(get_file_service),
-        file: UploadFile = None,
+        file: UploadFile | None = None,
 ) -> File:
     file = await file_service.upload(file)
     if not file:

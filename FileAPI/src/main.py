@@ -2,15 +2,17 @@ import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
+from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
+from miniopy_async import Minio
+from sqlalchemy.ext.asyncio import create_async_engine
+
 from api.v1 import file
 from core import config
 from core.logger import LOGGING
 from db import minio, postgres
-from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
-from miniopy_async import Minio
-from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
-                                    create_async_engine)
+from models.file_db import Base
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 settings = config.Settings()
 
@@ -18,9 +20,9 @@ settings = config.Settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     minio.minio = Minio(
-        endpoint=settings.minio.endpoint,
-        access_key=settings.minio.user,
-        secret_key=settings.minio.password,
+        endpoint=f'{settings.minio_host}:{settings.minio_port}',
+        access_key=settings.minio_user,
+        secret_key=settings.minio_password,
         secure=False,
     )
     result = await minio.minio.bucket_exists(config.bucket_settings.bucket_movies)
@@ -31,8 +33,7 @@ async def lifespan(_: FastAPI):
         f'{settings.observer_type}://{settings.observer_user}:{settings.observer_password}@{settings.observer_host}:{settings.observer_port}/{settings.observer_database}',
         echo=True,
     )
-    postgres.async_session = async_sessionmaker(
-        postgres.engine, class_=AsyncSession, expire_on_commit=False)
+    postgres.async_session = async_sessionmaker(postgres.engine, class_=AsyncSession, expire_on_commit=False)
 
     yield
     await postgres.engine.dispose()
@@ -56,5 +57,4 @@ if __name__ == '__main__':
         app,
         log_config=LOGGING,
         log_level=logging.DEBUG,
-        reload=True,
     )
