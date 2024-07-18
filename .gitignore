@@ -57,6 +57,7 @@ coverage.xml
 cover/
 ASR/src/models/
 TTS/src/model/v1/xtts
+qdrant_data
 # Translations
 *.mo
 *.pot
