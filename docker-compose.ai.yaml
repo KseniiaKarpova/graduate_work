@@ -1,0 +1,81 @@
+version: '3'
+
+services:
+
+#______________ASR_______________
+
+  asr_api:
+    container_name: asr_api
+    command: uvicorn main:app --host 0.0.0.0 --port 3003 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+    volumes:
+      - ./ASR/src:/app
+    build:
+      context: ASR
+      dockerfile: Dockerfile
+    networks:
+      - application_network
+
+#______________TTS_______________
+
+  tts_api:
+    container_name: tts_api
+    command: uvicorn main:app --host 0.0.0.0 --port 3004 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+    volumes:
+      - ./TTS/src:/app
+    build:
+      context: TTS
+      dockerfile: Dockerfile
+    networks:
+      - application_network
+
+#______________INTENTS_______________
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    container_name: qdrant
+    ports:
+      - 6333:6333
+      - 6334:6334
+    expose:
+      - 6333
+      - 6334
+      - 6335
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+
+
+
+#______________Nginx_______________
+  nginx:
+    image: nginx:1.19.2
+    container_name: nginx
+    volumes:
+      - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./Nginx/asr_api.conf:/etc/nginx/conf.d/asr_api.conf:ro
+      - ./Nginx/tts_api.conf:/etc/nginx/conf.d/tts_api.conf:ro
+    depends_on:
+      asr_api:
+        condition: service_started
+      tts_api:
+        condition: service_started
+    ports:
+      - "8003:8003"
+      - "8004:8004"
+    networks:
+      - application_network
+
+
+
+networks:
+  application_network:
+
+volumes:
+  qdrant_data:

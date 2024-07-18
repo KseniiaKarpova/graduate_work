@@ -1,0 +1,84 @@
+@startuml
+!include <logos/django>
+!include <logos/postgresql>
+!include <cloudinsight/redis>
+!include <cloudinsight/kafka>
+!include <cloudinsight/rabbitmq>
+!include <logos/mongodb>
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+
+
+title Архитектура Проекта (Голосовой Ассистент)
+actor "Actor"
+actor "Admin"
+
+package Auth{
+    [auth_api] 
+    database "<$postgresql>" as auth_postgres #White
+    database "<$redis>" as auth_redis #White
+}
+package File{
+  [file_api]
+  AMAZONS3(s3_internal)
+}
+
+package History{
+  [history_api]
+  database "<$mongodb>" as mongo #White
+}
+queue "<$rabbitmq>" as rabbit #White
+
+
+package AI {
+
+  [SpeachToText]
+
+  [TextToSpeach]
+
+  [IntentServer]
+
+  [TextToVec]
+
+  database "<$qdrant>" as qdrant #White
+}
+
+
+
+package Worker{
+  [main]
+}
+package WebSocket{
+  [sockets]
+  [subscriber]
+  database "<$redis>" as redis #White
+}
+
+
+skinparam PackageBackgroundColor Azure
+
+[Actor] <--> [sockets]: "Actor connect"
+[sockets] --> [redis]: "Session is created"
+[sockets] --> [rabbit]: "queue the task"
+[rabbit] --> [main]: "Launch the main task"
+
+[main] <..> [file_api]: "save audio from client to S3"
+[main] <..> [SpeachToText]: "convert the audio to text"
+[main] <..> [IntentServer]: "define what the client wants"
+[main] <..> [TextToSpeach]: "convert the result to speach"
+[main] <..> [file_api]: "save audio from client to S3"
+[main] <..> [history_api]: "saving the result text to history"
+[main] --> [file_api]: "save the result audio to S3 and get audio link"
+[main] --> [redis]: "Publisher send the audio link"
+
+[redis] --> [subscriber]: "Send the audio link to subscriber"
+[subscriber] --> [sockets]: "Send the audio link to the client"
+[file_api] --> [s3_internal]: "file saving"
+[history_api] --> [mongo]
+
+
+[IntentServer] <..> [qdrant]: "gets the nearest vector"
+[Admin] --> [TextToVec]: "Admin or ETL add new film or intent to database"
+[Admin] --> [IntentServer]: "add intent and answer"
+[TextToVec] --> [qdrant]: "add vector"
+@enduml

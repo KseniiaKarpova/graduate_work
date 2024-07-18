@@ -1,7 +1,39 @@
 # Проектная работа: диплом
 
-У вас будет один репозиторий на все 4 недели работы над дипломным проектом. 
+Подробное описание проекта смотрите в [документации](./docs)
 
-Если вы выбрали работу в командах, ревью будет организовано как в командных модулях с той лишь разницей, что формируете состав команды и назначаете тимлида вы сами, а не команда сопровождения.
+## Запуск проекта:
+Требуется заполнить в .env
+`AUTH_GOOGLE_CLIENT_ID=`
+`AUTH_GOOGLE_CLIENT_SECRET=`
 
-Удачи!
+
+```bash
+cp env_example .env
+```
+
+```bash
+
+docker-compose -f docker-compose.ai.yaml  up --build
+```
+
+```bash
+docker exec AuthAPI alembic upgrade head 
+```
+
+
+
+## Test
+
+Чтоб записать тестовое аудио (linux):
+
+```bash
+arecord -f S16_LE exmpl.wav
+```
+Чтоб остановить запись `Ctrl + C`
+
+
+## Api Docs
+- ASR: http://localhost:8003/api/openapi
+- File API: http://localhost:8002/api/openapi
+- Auth API: http://localhost:8001/api/openapi
