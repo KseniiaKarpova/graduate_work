@@ -1,6 +1,7 @@
 MONGODB_URI=mongodb://mongos:27017/
-MONGODB_URI=mongodb://mongos:27017/
 MONGODB_DB_NAME=posts_db
+HISTORY_MONGO_DB_NAME=history
+HISTORY_MONGO_DB_URI=mongodb://history_db:27017/
 
 TEST_MONGODB_URI=mongodb://test_mongos:27017/
 TEST_MONGODB_DB_NAME=test_posts_db

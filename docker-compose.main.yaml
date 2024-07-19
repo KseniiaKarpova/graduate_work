@@ -60,7 +60,7 @@ services:
   file_api:
     container_name: file_api
     command: >
-      bash -c "alembic upgrade 657bdb3eea2b && gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:7070"
+      bash -c "alembic upgrade 657bdb3eea2b && uvicorn main:app --host 0.0.0.0 --port 7070 --reload"
     env_file:
       - .env
     build:
@@ -98,6 +98,29 @@ services:
     networks:
       - application_network
 
+
+#___________Assistant api________
+
+  assistant_api:
+    container_name: assistant_api
+    command: >
+      bash -c "uvicorn main:app --host 0.0.0.0 --port 8080 --reload"
+    env_file:
+      - .env
+    build:
+      context: AssistantAPI
+      dockerfile: Dockerfile
+    depends_on:
+      file_api:
+        condition: service_started
+      minio:
+        condition: service_started
+    volumes:
+      - ./AssistantAPI:/src
+    networks:
+      - application_network
+
+
   minio:
     image: minio/minio
     container_name: minio
@@ -124,18 +147,39 @@ services:
       - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./Nginx/auth_api.conf:/etc/nginx/conf.d/auth_api.conf:ro
       - ./Nginx/file_api.conf:/etc/nginx/conf.d/file_api.conf:ro
+      - ./Nginx/assistant_api.conf:/etc/nginx/conf.d/assistant_api.conf:ro
     depends_on:
       auth_api:
         condition: service_started
       file_api:
+        condition: service_started
+      assistant_api:
         condition: service_started
     ports:
       - "8001:8001"
       - "8002:8002"
       - "8003:8003"
       - "8004:8004"
+      - "8080:8080"
     networks:
       - application_network
+
+  #____________Mongo________________
+  history_db:
+    image: mongo:5.0.21
+    hostname: history_db
+    container_name: history_db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_DATABASE=${HISTORY_MONGO_DB_NAME}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - application_network
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 1
 
 
 
