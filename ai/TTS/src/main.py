@@ -3,12 +3,12 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from core.config import settings
-from model.v1 import manager
+from model.v2 import manager
 from api.v1 import tts
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    manager.init(settings.tts)
+    manager.init(settings.tts.name)
     yield
 
 

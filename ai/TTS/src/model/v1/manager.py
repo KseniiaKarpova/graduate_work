@@ -46,9 +46,6 @@ class XttsModelManager(BaseModelManager):
     def pre_process(self):
         pass
 
-    def copy_voice(self, audio):
-        pass
-
     def encode_audio_common(self,
                             frame_input,
                             encode_base64=True,

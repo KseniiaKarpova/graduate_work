@@ -171,3 +171,4 @@ __pycache__
 *env/
 *.json
 local*
+ai/TTS/src/out.wav

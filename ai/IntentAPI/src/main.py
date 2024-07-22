@@ -15,7 +15,7 @@ from services import facade
 async def lifespan(app: FastAPI):
     redis.redis = Redis(host=settings.redis.host, port=settings.redis.port)
     facade.facade = facade.Facade(settings.t2v.url, settings.conf)
-    facade.facade.create()
+    await facade.facade.create()
     yield
     await redis.redis.close()
 

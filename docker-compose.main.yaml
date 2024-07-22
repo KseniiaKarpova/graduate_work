@@ -128,6 +128,7 @@ services:
       - ./Nginx/tts_api.conf:/etc/nginx/conf.d/tts_api.conf:ro
       - ./Nginx/text2vec.conf:/etc/nginx/conf.d/text2vec.conf:ro
       - ./Nginx/intent_api.conf:/etc/nginx/conf.d/intent_api.conf:ro
+      - ./Nginx/asr_api.conf:/etc/nginx/conf.d/asr_api.conf:ro
     depends_on:
       auth_api:
         condition: service_started

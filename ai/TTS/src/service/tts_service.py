@@ -1,4 +1,4 @@
-from model.v1.manager import XttsModelManager
+from model.v2.manager import VoskModelManager
 from model import BaseModelManager
 from functools import lru_cache
 from fastapi import Depends
@@ -15,6 +15,6 @@ class TTSServices:
 
 @lru_cache()
 def get_tts_service(
-    model_manger: BaseModelManager = Depends(XttsModelManager),
+    model_manger: BaseModelManager = Depends(VoskModelManager),
 ) -> TTSServices:
     return TTSServices(model_manger)

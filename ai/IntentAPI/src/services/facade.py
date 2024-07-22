@@ -1,5 +1,4 @@
-import requests
-import time
+from utils.request_api import post_request, get_request
 import yaml
 from fastapi import Request
 
@@ -16,9 +15,8 @@ class Facade:
             self.conf = yaml.load(fh, Loader=yaml.FullLoader)
         print(self.conf)
 
-    def create(self):
+    async  def create(self):
         for item in self.conf.get('intents'):
-            print(item)
             json_data = {
                 'name': item.get('name'),
                 'texts': item.get('query'),
@@ -31,12 +29,15 @@ class Facade:
                 'X-Forwarded-For': 'Intent',
                 'X-Request-Id': str(item.get('id'))
             }
-            response = requests.post(self.url, headers=headers, json=json_data)
-            print(response.text)
-            time.sleep(5)
+            response = await post_request(self.url, head=headers, body=json_data)
+            print(response)
 
-    def ask(self, text: str):
+    async def ask(self, text: str):
         pass
+
+    async def get_class(self, text: str, request: Request):
+        pass
+
 
 
 

@@ -8,10 +8,6 @@ class BaseModelManager(ABC):
         pass
 
     @abstractmethod
-    def copy_voice(self, audio):
-        pass
-
-    @abstractmethod
     def post_process(self):
         pass
 

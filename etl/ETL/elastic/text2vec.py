@@ -1,7 +1,6 @@
 import requests
 import os
 from dotenv import load_dotenv
-import time
 
 
 load_dotenv()
@@ -26,4 +25,3 @@ def insert_to_entity(index: str, text: str, metadata: dict = {}):
     }
     response = requests.post(URL, headers=headers, json=json_data)
     print(response.text)
-    time.sleep(1)
