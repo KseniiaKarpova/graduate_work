@@ -10,7 +10,7 @@ from fastapi_pagination import Params
 router = APIRouter(prefix="/chat-history")
 
 
-@router.get("/",  status_code=status.HTTP_200_OK)
+@router.get("",  status_code=status.HTTP_200_OK)
 async def read(
     user_id: UUID | None = None,
     jwt_handler: JwtHandler = Depends(require_access_token),
