@@ -18,7 +18,7 @@ class RedisSettings(BaseSettings):
     host: str = ...
     port: int = ...
 
-    model_config = SettingsConfigDict(env_prefix='redis_')
+    model_config = SettingsConfigDict(env_prefix='auth_redis_')
 
 
 class AuthSettings(BaseSettings):

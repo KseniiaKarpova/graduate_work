@@ -1,0 +1,23 @@
+intents:
+  - name: "Кто режисер фильма Х"
+    id: 0
+    entity: movies
+    query:
+      - кто режисер фильма
+      - кто создал фильм
+      - кто автор фильма
+    uri: "api/v1/films/{id}"
+    script:
+      - get: director
+    answer: "Режисcером является {result}"
+
+  - name: "сколько фильмов выпустил автор Y"
+    id: 1
+    entity: persons
+    query:
+      - сколько фильмов создал
+      - сколько фильмов выпустил
+    uri: "api/v1/persons/{id}/film"
+    script:
+      - func: len
+    answer: "Режиссер создал {result} фильм(?)"

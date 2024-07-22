@@ -1,0 +1,131 @@
+version: '3.9'
+
+services:
+  postgres:
+    build:
+      context: etl/postgres
+      dockerfile: dockerfile
+    container_name: postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_NAME}
+    networks:
+      - application_network
+
+
+  elasticsearch:
+    image: elasticsearch:8.6.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - ES_JAVA_OPTS="-Xms200m -Xmx200m"
+    env_file:
+      - .env
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: always
+    networks:
+      - application_network
+
+
+  data_transfer_sqlite_to_pg:
+    build:
+      context: etl/data_transfer_sqlite_to_pg
+      dockerfile: Dockerfile
+    container_name: data_transfer
+    ports:
+      - "8877:8877"
+    env_file:
+      - .env
+    networks:
+      - application_network
+
+
+  cache:
+    image: redis:7.2.3-alpine3.18
+    container_name: cache
+    restart: always
+    ports:
+      - '6379:6379'
+    env_file:
+      - .env
+    volumes:
+      - cache:/data
+    networks:
+      - application_network
+
+  etl:
+    container_name: etl
+    build:
+      context: etl/ETL
+      dockerfile: dockerfile
+    command: python3 main.py
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_started
+      cache:
+        condition: service_started
+      elasticsearch:
+        condition: service_started
+      text2vec:
+        condition: service_started
+    environment:
+      PYTHONPATH: /src
+      DB_NAME: ${PG_NAME}
+      DB_USER: ${PG_USER}
+      DB_PASSWORD: ${PG_PASSWORD}
+      DB_HOST: ${PG_HOST}
+      DB_PORT: ${PG_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_DB: ${REDIS_DB}
+      ES_HOST: ${ES_HOST}
+      ES_PORT: ${ES_PORT}
+    networks:
+      - application_network
+
+#_____________content______________
+  cinema_api:
+    container_name: cinema_api
+    image: cinema_api
+    command: gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:7000 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app/src
+      ES_HOST: ${ES_HOST}
+      ES_PORT: ${ES_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+    build:
+      context: etl/CinemaAPI
+      dockerfile: Dockerfile
+    volumes:
+      - ./etl/CinemaAPI/src:/app
+    depends_on:
+      postgres:
+        condition: service_started
+      cache:
+        condition: service_started
+      elasticsearch:
+        condition: service_started
+    networks:
+      - application_network
+
+networks:
+  application_network:
+
+
+volumes:
+  pg_data:
+  es_data:
+  cache:
+
