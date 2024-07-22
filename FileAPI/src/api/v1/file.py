@@ -15,9 +15,10 @@ router = APIRouter()
     description="",
 )
 async def upload_file(
+        file: UploadFile,
         file_service: FileService = Depends(get_file_service),
-        file: UploadFile | None = None,
 ) -> File:
+    print(file)
     file = await file_service.upload(file)
     if not file:
         raise server_error
