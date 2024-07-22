@@ -9,8 +9,9 @@ from utils.constraint import RequestLimit
 from utils.jaeger import configure_tracer
 
 from core import config, logger
+from core.logger import LOGGING, setup_root_logger
 from api import setup_routers
-from db import redis
+from db import redis, init_db, mongo
 
 from contextlib import asynccontextmanager
 
@@ -19,13 +20,17 @@ from async_fastapi_jwt_auth.exceptions import AuthJWTException
 from middleware.main import setup_middleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from redis.asyncio import Redis
+from motor.motor_asyncio import AsyncIOMotorClient
 
 
 settings = config.APPSettings()
 
+setup_root_logger()
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    mongo.mongo_client = AsyncIOMotorClient(str(settings.mongodb.uri), uuidRepresentation='standard')
+    await init_db.init(client=mongo.mongo_client)
     if settings.jaeger.enable:
         configure_tracer(
             host=settings.jaeger.host,

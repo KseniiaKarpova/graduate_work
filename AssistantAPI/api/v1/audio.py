@@ -4,8 +4,8 @@ from core.config import settings
 
 router = APIRouter(prefix="/audio")
 
-@router.post("/upload")
-async def upload_file(file: UploadFile):
+@router.post("")
+async def send_audio(file: UploadFile):
     async with ClientSession() as session:
         form = FormData()
         form.add_field('file',

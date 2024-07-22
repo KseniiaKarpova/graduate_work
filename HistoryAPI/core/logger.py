@@ -21,14 +21,14 @@ def setup_root_logger():
     console = logging.StreamHandler()
     console.setFormatter(formatter)
 
-    if not os.path.exists(settings.logger_filename):
-        open(settings.logger_filename, 'w').close()
+    if not os.path.exists(settings.logger.filename):
+        open(settings.logger.filename, 'w').close()
 
     file = logging.handlers.RotatingFileHandler(
-        filename=settings.logger_filename,
-        mode=settings.logger_mod,
-        maxBytes=settings.logger_maxbytes,
-        backupCount=settings.logger_backup_count,
+        filename=settings.logger.filename,
+        mode=settings.logger.mod,
+        maxBytes=settings.logger.maxbytes,
+        backupCount=settings.logger.backup_count,
     )
     file.setFormatter(formatter)
     logger.addHandler(console)
@@ -96,4 +96,4 @@ LOGGING = {
 }
 
 
-logger = logging.getLogger('posts_logger')
+logger = logging.getLogger('history_logger')

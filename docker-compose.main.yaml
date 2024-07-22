@@ -115,6 +115,10 @@ services:
         condition: service_started
       minio:
         condition: service_started
+      auth_api:
+        condition: service_started
+      history_api:
+        condition: service_started
     volumes:
       - ./AssistantAPI:/src
     networks:
@@ -148,6 +152,7 @@ services:
       - ./Nginx/auth_api.conf:/etc/nginx/conf.d/auth_api.conf:ro
       - ./Nginx/file_api.conf:/etc/nginx/conf.d/file_api.conf:ro
       - ./Nginx/assistant_api.conf:/etc/nginx/conf.d/assistant_api.conf:ro
+      - ./Nginx/history_api.conf:/etc/nginx/conf.d/history_api.conf:ro
     depends_on:
       auth_api:
         condition: service_started
@@ -155,12 +160,15 @@ services:
         condition: service_started
       assistant_api:
         condition: service_started
+      history_api:
+        condition: service_started
     ports:
       - "8001:8001"
       - "8002:8002"
       - "8003:8003"
       - "8004:8004"
-      - "8080:8080"
+      - "8005:8005"
+      - "8006:8006"
     networks:
       - application_network
 
@@ -177,9 +185,40 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - application_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo $(hostname)/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     mem_limit: 512m
     mem_reservation: 128M
     cpus: 1
+
+  history_api:
+    container_name: HistoryAPI
+    command: uvicorn main:app --host 0.0.0.0 --port 3001 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /src
+    volumes:
+      - ./HistoryAPI:/src
+      - logs:/src/logs
+    build:
+      context: HistoryAPI
+      dockerfile: Dockerfile
+    depends_on:
+      redis:
+        condition: service_started
+      history_db:
+        condition: service_healthy
+      
+    networks:
+      - application_network
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
 
 
 
@@ -191,3 +230,4 @@ volumes:
   redis_data:
   file_data:
   minio_data:
+  logs:

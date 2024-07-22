@@ -1,5 +1,5 @@
 from fastapi import Query
-
+from fastapi_pagination import Page, add_pagination, Params
 
 class QueryParams:
     def __init__(

@@ -61,7 +61,7 @@ class WorkerService(BaseSettings):
 
 
 class APPSettings(BaseSettings):
-    project_name: str = 'Auth API'
+    project_name: str = 'Assistant API'
     redis: RedisSettings = RedisSettings()
     auth: AuthSettings = AuthSettings()
     hasher: HasherSettings = HasherSettings()

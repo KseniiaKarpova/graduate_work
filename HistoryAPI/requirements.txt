@@ -32,3 +32,4 @@ opentelemetry-exporter-jaeger==1.17.0
 python-jose==3.3.0
 fastapi-pagination
 beanie==1.25.0
+itsdangerous==2.0.1

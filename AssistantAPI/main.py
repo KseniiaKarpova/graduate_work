@@ -4,10 +4,6 @@ import uvicorn
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse, ORJSONResponse
 from fastapi_pagination import add_pagination
-
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
-
 from utils.constraint import RequestLimit
 from utils.jaeger import configure_tracer
 
