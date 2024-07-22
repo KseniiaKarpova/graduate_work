@@ -7,7 +7,6 @@ class ProxyStorage(AbstractStorage):
         self.path_storage = path_storage
 
     async def save(self, file, bucket, path):
-        print(file)
         short_name = shortuuid.uuid(name=file.filename)
         data = {
             'short_name': short_name,
@@ -21,6 +20,7 @@ class ProxyStorage(AbstractStorage):
 
     async def get(self, bucket, short_name):
         data = await self.path_storage.get(short_name)
-        result = await self.object_storage.get(bucket=bucket, path=data[0], filename=data[1])
+        result = await self.object_storage.get_presigned_url(bucket=bucket, path=data[0], filename=data[1])
+        print(result, '##########################')
         return result
 

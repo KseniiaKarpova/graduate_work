@@ -1,11 +1,13 @@
-from fastapi import APIRouter, UploadFile, Response
+from fastapi import APIRouter, UploadFile, HTTPException, status
 from aiohttp import ClientSession, FormData
 from core.config import settings
+from core.handlers import require_access_token, JwtHandler
 
 router = APIRouter(prefix="/audio")
 
-@router.post("")
-async def send_audio(file: UploadFile):
+@router.post("", status_code=status.HTTP_201_CREATED)
+async def send_audio(
+    file: UploadFile):
     async with ClientSession() as session:
         form = FormData()
         form.add_field('file',
@@ -15,7 +17,6 @@ async def send_audio(file: UploadFile):
         headers = {"Content-Disposition": f'attachment; filename="{file.filename}"'}
         async with session.post(f"{settings.file_service.path}", headers=headers, data=form) as response:
             if response.status != 200:
-                return Response(status_code=response.status, content="Failed to upload to external API")
+                return HTTPException(status_code=response.status, detail=(await response.json())['detail'])
             response_json = await response.json()
-        print(response_json)
         return response_json["short_name"]

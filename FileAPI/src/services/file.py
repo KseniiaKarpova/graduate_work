@@ -26,7 +26,6 @@ class FileService(AbstractService):
         return data
 
 
-@lru_cache()
 def get_file_service(
     minio: AbstractStorage = Depends(MinioStorage),
     pg: AbstractStorage = Depends(PostgresStorage),

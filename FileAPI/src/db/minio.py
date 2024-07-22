@@ -35,10 +35,9 @@ class MinioStorage(AbstractStorage):
             async def s3_stream():
                 async for chunk in result.content.iter_chunked(32 * 1024):
                     yield chunk
-
+                await session.close()
             return StreamingResponse(
                 content=s3_stream(),
-                media_type='video/mp4',
                 headers={'Content-Disposition': f'filename="{filename}"'}
             )
         except Exception:
