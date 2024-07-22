@@ -12,9 +12,9 @@ services:
     environment:
       PYTHONPATH: /app
     volumes:
-      - ./ASR/src:/app
+      - ./ai/ASR/src:/app
     build:
-      context: ASR
+      context: ai/ASR
       dockerfile: Dockerfile
     networks:
       - application_network
@@ -29,53 +29,83 @@ services:
     environment:
       PYTHONPATH: /app
     volumes:
-      - ./TTS/src:/app
+      - ./ai/TTS/src:/app
     build:
-      context: TTS
+      context: ai/TTS
       dockerfile: Dockerfile
     networks:
       - application_network
 
 #______________INTENTS_______________
   qdrant:
-    image: qdrant/qdrant:latest
-    restart: always
     container_name: qdrant
+    image: qdrant/qdrant:latest
+    ulimits:
+      nofile:
+        hard: 65535
+        soft: 65535
+      nproc: 65535
+    restart: always
     ports:
-      - 6333:6333
-      - 6334:6334
-    expose:
-      - 6333
-      - 6334
-      - 6335
+      - "6333:6333"
     volumes:
-      - ./qdrant_data:/qdrant/storage
-
-
-
-#______________Nginx_______________
-  nginx:
-    image: nginx:1.19.2
-    container_name: nginx
-    volumes:
-      - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./Nginx/asr_api.conf:/etc/nginx/conf.d/asr_api.conf:ro
-      - ./Nginx/tts_api.conf:/etc/nginx/conf.d/tts_api.conf:ro
-    depends_on:
-      asr_api:
-        condition: service_started
-      tts_api:
-        condition: service_started
-    ports:
-      - "8003:8003"
-      - "8004:8004"
+      - qdrant_data:/qdrant/storage
     networks:
       - application_network
 
 
+  text2vec:
+    container_name: text2vec
+    command: uvicorn main:app --host 0.0.0.0 --port 3303 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+    volumes:
+      - ./ai/Text2Vec/src:/app
+    build:
+      context: ai/Text2Vec
+      dockerfile: Dockerfile
+    depends_on:
+      qdrant:
+        condition: service_started
+    networks:
+      - application_network
+
+  redis_intent:
+    image: redis:7.2.3-alpine3.18
+    container_name: redis_intent
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - redis_intent:/data
+    networks:
+      - application_network
+
+  intent_api:
+    container_name: intent_api
+    command: uvicorn main:app --host 0.0.0.0 --port 3303 --reload
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+    volumes:
+      - ./ai/IntentAPI/src:/app
+    build:
+      context: ai/IntentAPI
+      dockerfile: Dockerfile
+    depends_on:
+      redis_intent:
+        condition: service_started
+      text2vec:
+        condition: service_started
+    networks:
+      - application_network
 
 networks:
   application_network:
 
 volumes:
   qdrant_data:
+  redis_intent:
