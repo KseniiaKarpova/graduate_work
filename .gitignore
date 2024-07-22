@@ -55,8 +55,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-ASR/src/models/
-TTS/src/model/v1/xtts
+ai/ASR/src/models/
+ai/TTS/src/model/v1/xtts
 qdrant_data
 # Translations
 *.mo
@@ -124,7 +124,8 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
-
+____CinemaAPI
+____DjangoAdmin
 # Rope project settings
 .ropeproject
 

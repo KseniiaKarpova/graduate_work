@@ -124,6 +124,10 @@ services:
       - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./Nginx/auth_api.conf:/etc/nginx/conf.d/auth_api.conf:ro
       - ./Nginx/file_api.conf:/etc/nginx/conf.d/file_api.conf:ro
+      - ./Nginx/cinema_api.conf:/etc/nginx/conf.d/cinema_api.conf:ro
+      - ./Nginx/tts_api.conf:/etc/nginx/conf.d/tts_api.conf:ro
+      - ./Nginx/text2vec.conf:/etc/nginx/conf.d/text2vec.conf:ro
+      - ./Nginx/intent_api.conf:/etc/nginx/conf.d/intent_api.conf:ro
     depends_on:
       auth_api:
         condition: service_started
@@ -134,6 +138,9 @@ services:
       - "8002:8002"
       - "8003:8003"
       - "8004:8004"
+      - "8005:8005"
+      - "8006:8006"
+      - "8007:8007"
     networks:
       - application_network
 
