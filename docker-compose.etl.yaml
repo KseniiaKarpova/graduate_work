@@ -17,14 +17,10 @@ services:
 
 
   elasticsearch:
-    image: elasticsearch:8.6.2
-    container_name: elasticsearch
-    ports:
-      - "9200:9200"
+    image: elasticsearch:7.16.1
     environment:
-      - "discovery.type=single-node"
-      - "xpack.security.enabled=false"
-      - ES_JAVA_OPTS="-Xms200m -Xmx200m"
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      discovery.type: single-node
     env_file:
       - .env
     volumes:
@@ -75,8 +71,8 @@ services:
         condition: service_started
       elasticsearch:
         condition: service_started
-      text2vec:
-        condition: service_started
+      #text2vec:
+      #  condition: service_started
     environment:
       PYTHONPATH: /src
       DB_NAME: ${PG_NAME}

@@ -149,7 +149,7 @@ OBSERVER_PG_NAME=file_api
 qdrant_host=qdrant
 qdrant_port=6333
 qdrant_embed=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-qdrant_threshold=0.9
+qdrant_threshold=0.7
 
 translate_checkpoint=Helsinki-NLP/opus-mt-en-ru
 translate_source_lang=en_XX
@@ -160,7 +160,7 @@ t2v_host=text2vec
 t2v_port=3303
 
 cinema_host=cinema_api
-cinema_port=cinema_api
+cinema_port=7000
 
 redis_intent_HOST=redis_intent
 redis_intent_PORT=6379

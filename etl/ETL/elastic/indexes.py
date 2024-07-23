@@ -16,15 +16,13 @@ class Index:
         client, index, body = cls.__client__, cls.name(), cls.settings()
         client.indices.create(index=index, body=body, ignore=400)
         for document in data:
-
+            datum = cls.remove_not_mapped_fields(data=dict(document))
+            client.index(index=index, body=datum, id=datum['id'])
+            print(datum, '----------saved----------')
             if cls.__index_name__ == 'movies':
                 insert_to_entity(cls.__index_name__, document.title, {'id': str(document.id)})
             elif cls.__index_name__ == 'persons':
                 insert_to_entity(cls.__index_name__, document.name, {'id': str(document.id)})
-
-            datum = cls.remove_not_mapped_fields(data=dict(document))
-            client.index(index=index, body=datum, id=datum['id'])
-            print(datum, '----------saved----------')
         client.indices.refresh(index=index)
 
     @classmethod

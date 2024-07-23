@@ -40,7 +40,7 @@ def fetch_changed_objects(next_node: Generator, session) -> Generator[None, date
         last_modified = data['last_modified']
         repository: BaseRepository = data['repository']
         with session:
-            records_per_page = 100
+            records_per_page = 10
             offset = 0
             while True:
                 query = repository.last_updateds(limit=records_per_page, offset=offset, updated_at=last_modified)
