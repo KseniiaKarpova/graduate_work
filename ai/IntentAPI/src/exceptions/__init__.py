@@ -24,6 +24,10 @@ try_retry_after = HTTPException(
     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     detail="Извините, сервер временно недоступен, попробуйте попозже.")
 
+config_fail = HTTPException(
+    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+    detail="Извините, конфигурационный файл неверно настроен для интентов")
+
 empty = HTTPException(
     status_code=status.HTTP_204_NO_CONTENT,
     detail="Not found")

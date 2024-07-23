@@ -1,4 +1,4 @@
-from service.facade import get_facade
+from services.facade import get_facade
 from fastapi import APIRouter, Request
 
 
@@ -12,4 +12,5 @@ async def tts(
     request: Request,
     text: str = "",
 ):
-    return get_facade().ask(text, request)
+    result = await get_facade().ask(text, request)
+    return result

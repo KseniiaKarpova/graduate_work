@@ -15,7 +15,7 @@ from utils.constraint import RequestLimit
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    qdrant.client = qdrant.connect(settings.db.host, settings.db.port)
+    qdrant.client = qdrant.connect(settings.db.host, settings.db.port, settings.db.embed)
     translator.model = translator.load_model()
     translator.tokenizer = translator.init_tokenizer()
     translator.translation_pipeline = translator.init_translator()

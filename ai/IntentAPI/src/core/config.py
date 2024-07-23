@@ -31,7 +31,7 @@ class Text2VecSettings(BaseSettings):
 
     @property
     def url(self):
-        return f"http://{self.host}:{self.port}/api/v1/intent/"
+        return f"http://{self.host}:{self.port}/api/v1/[type]/"
 
 
 class CinemaSettings(BaseSettings):
@@ -39,12 +39,17 @@ class CinemaSettings(BaseSettings):
     port: int = ...
     model_config: str = SettingsConfigDict(env_prefix='cinema_')
 
+    @property
+    def url(self):
+        return f"http://{self.host}:{self.port}"
+
 class APPSettings(BaseSettings):
     project_name: str = 'Intent API'
     conf: str = 'conf.yaml'
     redis: RedisSettings = RedisSettings()
     auth: AuthSettings = AuthSettings()
     t2v: Text2VecSettings = Text2VecSettings()
+    cinema = CinemaSettings()
 
 
 settings = APPSettings()

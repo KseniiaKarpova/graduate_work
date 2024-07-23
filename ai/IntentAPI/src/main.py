@@ -9,6 +9,7 @@ from fastapi.responses import ORJSONResponse
 from redis.asyncio import Redis
 from utils.constraint import RequestLimit
 from services import facade
+from api.v1 import bot
 
 
 @asynccontextmanager
@@ -49,9 +50,7 @@ async def before_request(request: Request, call_next):
     return response
 
 
-
-
-
+app.include_router(bot.router, prefix='/api/v1', tags=['bot'])
 
 
 if __name__ == '__main__':
