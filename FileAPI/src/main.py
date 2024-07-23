@@ -10,9 +10,10 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from api.v1 import file
 from core import config
 from core.logger import LOGGING
-from db import minio, postgres
+from db import minio, postgres, redis
 from models.file_db import Base
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from redis.asyncio import Redis
 
 settings = config.Settings()
 
@@ -34,9 +35,10 @@ async def lifespan(_: FastAPI):
         echo=True,
     )
     postgres.async_session = async_sessionmaker(postgres.engine, class_=AsyncSession, expire_on_commit=False)
-
+    redis.redis = Redis(host=settings.redis.host, port=settings.redis.port)
     yield
     await postgres.engine.dispose()
+    await redis.redis.close()
 
 
 app = FastAPI(

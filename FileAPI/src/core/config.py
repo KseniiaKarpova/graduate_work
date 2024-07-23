@@ -2,12 +2,37 @@ from logging import config as logging_config
 import os
 
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from core.logger import LOGGING
 
 # Применяем настройки логирования
 logging_config.dictConfig(LOGGING)
+
+
+class RedisSettings(BaseSettings):
+    host: str = ...
+    port: int = ...
+
+    model_config = SettingsConfigDict(env_prefix='redis_')
+
+
+class AuthSettings(BaseSettings):
+    secret_key: str = ...
+    jwt_algorithm: str = ...
+    google_client_id: str = ...
+    google_client_secret: str = ...
+    google_token_url: str = ...
+    google_base_url: str = ...
+    google_userinfo_url: str = ...
+    google_redirect_url: str = ...
+    model_config: str = SettingsConfigDict(env_prefix='auth_')
+
+
+class HasherSettings(BaseSettings):
+    algorithm: str = ...
+    rounds: int = ...
+    model_config: str = SettingsConfigDict(env_prefix='hasher_')
 
 
 class BucketSettings(BaseSettings):
@@ -29,6 +54,10 @@ class Settings(BaseSettings):
     observer_password: str = Field('user123', env='OBSERVER_PG_PASSWORD')
     observer_database: str = Field('file_api', env='OBSERVER_PG_NAME')
     observer_type: str = Field('postgresql+asyncpg', env='OBS_TYPE')
+    redis: RedisSettings = RedisSettings()
+    auth: AuthSettings = AuthSettings()
+    hasher: HasherSettings = HasherSettings()
 
 
 bucket_settings = BucketSettings()
+settings = Settings()
