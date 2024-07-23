@@ -35,14 +35,13 @@ class MinioStorage(AbstractStorage):
             async def s3_stream():
                 async for chunk in result.content.iter_chunked(32 * 1024):
                     yield chunk
-
             return StreamingResponse(
                 content=s3_stream(),
-                media_type='video/mp4',
-                headers={'Content-Disposition': f'filename="{filename}"'}
+                headers={'Content-Disposition': f'filename="{filename}"'},
             )
-        except Exception:
-            raise file_not_found
+        except Exception as e:
+            await session.close()
+            raise file_not_found from e
 
     async def get_presigned_url(self, bucket: str, path: str) -> str:
-        return await self.client.get_presigned_url('GET', bucket, path, expires=timedelta(days=1), )
+        return await self.client.get_presigned_url('GET', bucket, path, expires=timedelta(days=1),)

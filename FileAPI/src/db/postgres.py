@@ -1,4 +1,5 @@
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from db import AbstractStorage
 from models.file_db import FileDbModel
@@ -31,7 +32,7 @@ class PostgresStorage(AbstractStorage):
             session = await get_session()
             async with session.begin():
                 session.add(object)
-        except Exception:
+        except IntegrityError:
             raise file_already_exist_error
 
     async def get(self, short_name):

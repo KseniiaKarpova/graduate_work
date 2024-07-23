@@ -7,7 +7,6 @@ class ProxyStorage(AbstractStorage):
         self.path_storage = path_storage
 
     async def save(self, file, bucket, path):
-        print(file)
         short_name = shortuuid.uuid(name=file.filename)
         data = {
             'short_name': short_name,

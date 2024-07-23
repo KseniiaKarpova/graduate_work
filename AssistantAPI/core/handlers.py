@@ -52,7 +52,7 @@ class JWTBearer(HTTPBearer):
             'subject': subject,
             'jti': jti,
             'type': type
-        }
+        }, credentials.credentials
 
     async def check_denylist(self, jti):
         redis = get_redis()
@@ -89,6 +89,7 @@ class JwtHandler:
 
 
 def require_access_token(
-    jwt_data: dict = Depends(JWTBearer(token_type='access'))
+    jwt_data = Depends(JWTBearer(token_type='access'))
 ) -> JwtHandler:
-    return JwtHandler(jwt_data=jwt_data)
+    data, token = jwt_data
+    return JwtHandler(jwt_data=data), token
