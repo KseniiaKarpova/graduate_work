@@ -23,7 +23,6 @@ async def upload_file(
 
 @router.get(
     "/download-stream/{name}",
-    response_class=StreamingResponse,
     response_description="stream video file",
     description="File searching",
     summary="stream video file",
@@ -31,7 +30,7 @@ async def upload_file(
 async def download_file(
     file_service: FileService = Depends(get_file_service),
     name: str = "",
-):
+) -> StreamingResponse:
     films = await file_service.download(name)
     if not films:
         raise file_not_found

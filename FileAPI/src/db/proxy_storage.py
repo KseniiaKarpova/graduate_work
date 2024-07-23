@@ -20,7 +20,6 @@ class ProxyStorage(AbstractStorage):
 
     async def get(self, bucket, short_name):
         data = await self.path_storage.get(short_name)
-        result = await self.object_storage.get_presigned_url(bucket=bucket, path=data[0], filename=data[1])
-        print(result, '##########################')
+        result = await self.object_storage.get(bucket=bucket, path=data[0], filename=data[1])
         return result
 
