@@ -3,12 +3,17 @@ from fastapi import Depends, UploadFile
 import numpy as np
 from typing import List
 from services import MainDetector
-from exceptions import file_error
+from exceptions import file_error, big_file
 from core.logger import logger
 
 class Detector(MainDetector):
 
-    async def file_to_frame(self, upload_file: UploadFile, frame_rate: int = 8000):
+    async def file_to_frame(self, upload_file: UploadFile):
+        if upload_file.size > 300500:
+            raise  big_file
+
+        if upload_file.content_type != 'audio/wav':
+            raise  file_error
         try:
             audio_bytes = await upload_file.read()
             samples = np.frombuffer(audio_bytes, dtype=np.int16)
@@ -35,7 +40,7 @@ class Service:
         result = ''
         for start, stop in self.detector.vad_detect_2(samples):
             try:
-                text = self.detector.transcribe(samples[start: stop], 8000).strip()
+                text = self.detector.transcribe(samples[start: stop], 16000).strip()
                 logger.info(text)
                 if len(text) > 2:
                     result = result + " " + text

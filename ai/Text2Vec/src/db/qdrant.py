@@ -12,8 +12,10 @@ client: AsyncQdrantClient = None
 def get_client() -> AsyncQdrantClient:
     return client
 
-def connect(host, port) -> AsyncQdrantClient:
-    return  AsyncQdrantClient(url=f'http://{host}:{port}')
+def connect(host, port, model) -> AsyncQdrantClient:
+    client = AsyncQdrantClient(url=f'http://{host}:{port}')
+    client.set_model(model)
+    return  client
 
 class QdrantDB(BaseVecDB):
     async def add(self, collection_name, docs, metadata, ids):

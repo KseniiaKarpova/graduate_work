@@ -1,12 +1,20 @@
+no_answer:
+  - Извините, я вас не понял.
+  - Я не могу ответить на ваш вопрос.
+  - Я не могу разобрать что вы говорите.
+
 intents:
   - name: "Кто режисер фильма Х"
     id: 0
     entity: movies
     query:
-      - кто режисер фильма
+      - кто режисcер фильма
       - кто создал фильм
       - кто автор фильма
-    uri: "api/v1/films/{id}"
+      - кто создатель
+      - кто автор
+      - кто режисcер
+    uri: "/api/v1/films/{id}"
     script:
       - get: director
     answer: "Режисcером является {result}"
@@ -17,7 +25,7 @@ intents:
     query:
       - сколько фильмов создал
       - сколько фильмов выпустил
-    uri: "api/v1/persons/{id}/film"
+    uri: "/api/v1/persons/{id}/film"
     script:
       - func: len
-    answer: "Режиссер создал {result} фильм(?)"
+    answer: "Режиссер создал {result} (фильм|фильмов|фильма)"
