@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field, field_validator
 
 
-class ScriptModel(BaseModel):
+class AnswerModel(BaseModel):
     text: str = Field(description='Текст')
-    metadata: dict = Field(description='More info')
+    intent: str = Field(None, description='intent')
+    entity: str = Field(None, description='entity')
+    metadata: dict = Field(None, description='More info')
 

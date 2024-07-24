@@ -14,8 +14,8 @@ def insert_to_entity(index: str, text: str, metadata: dict = {}):
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json',
-        'X-Forwarded-For': metadata.get('id', 'ETL'),
-        'X-Request-Id': metadata.get('id', 'elt')
+        'X-Forwarded-For': str(metadata.get('id', 'ETL')),
+        'X-Request-Id': str(metadata.get('id', 'elt'))
     }
     json_data = {
         'collection_name': index,

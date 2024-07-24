@@ -49,7 +49,7 @@ class APPSettings(BaseSettings):
     redis: RedisSettings = RedisSettings()
     auth: AuthSettings = AuthSettings()
     t2v: Text2VecSettings = Text2VecSettings()
-    cinema = CinemaSettings()
+    cinema: CinemaSettings = CinemaSettings()
 
 
 settings = APPSettings()

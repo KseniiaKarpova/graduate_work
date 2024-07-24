@@ -1,5 +1,9 @@
 from typing import Tuple
-from __future__ import annotations
+import os
+
+
+def LCS(s1, s2):
+    return os.path.commonprefix([s1, s2])
 
 
 def number_to_words(n):

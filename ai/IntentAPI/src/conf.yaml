@@ -5,7 +5,6 @@ no_answer:
 
 intents:
   - name: "Кто режисер фильма Х"
-    id: 0
     entity: movies
     query:
       - кто режисcер фильма
@@ -14,18 +13,24 @@ intents:
       - кто создатель
       - кто автор
       - кто режисcер
-    uri: "/api/v1/films/{id}"
-    script:
-      - get: director
-    answer: "Режисcером является {result}"
+    attribute: writers_names
+    answer: "Режисcером фильма {entity} является {result}"
 
   - name: "сколько фильмов выпустил автор Y"
-    id: 1
     entity: persons
     query:
       - сколько фильмов создал
       - сколько фильмов выпустил
-    uri: "/api/v1/persons/{id}/film"
-    script:
-      - func: len
-    answer: "Режиссер создал {result} (фильм|фильмов|фильма)"
+    attribute: films_cont
+    answer: "{entity} снял {result} (фильм|фильмов|фильма)"
+
+  - name: "сколько актеров снимается в Х"
+    entity: movies
+    query:
+      - сколько актеров снимается в фильме
+      - сколько актеров снимается в
+      - сколько участников в фильме
+      - сколько героев в
+      - сколько героев в фильме
+    attribute: actors_cont
+    answer: "В фильме {entity} снимается {result} (актер|актеров|актера)"
