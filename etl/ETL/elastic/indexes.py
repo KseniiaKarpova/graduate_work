@@ -19,10 +19,25 @@ class Index:
             datum = cls.remove_not_mapped_fields(data=dict(document))
             client.index(index=index, body=datum, id=datum['id'])
             print(datum, '----------saved----------')
+
             if cls.__index_name__ == 'movies':
-                insert_to_entity(cls.__index_name__, document.title, {'id': str(document.id)})
+                val = {
+                    'id': str(datum['id']),
+                    'title': datum['title'],
+                    'writers_names' : ", ".join(datum['writers_names']),
+                    'writers_cont': len(datum['writers_names']),
+                    'actors_names': ", ".join(datum['actors_names']),
+                    'actors_cont': len(datum['actors_names']),
+                    'description': datum['description']
+                }
+                insert_to_entity(cls.__index_name__, document.title, val)
             elif cls.__index_name__ == 'persons':
-                insert_to_entity(cls.__index_name__, document.name, {'id': str(document.id)})
+                val = {
+                    'id': str(datum['id']),
+                    'name': datum['name'],
+                    'films_cont': len(datum['films'])
+                }
+                insert_to_entity(cls.__index_name__, document.name, val)
         client.indices.refresh(index=index)
 
     @classmethod

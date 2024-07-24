@@ -11,11 +11,16 @@ class EntityStorage(BaseStorage):
     def __init__(self, database: BaseVecDB):
         self.database = database
 
+    def trans(self, data: dict):
+        for key, val in data.items():
+            if isinstance(val, str):
+                data[key] = translation(val)
+        return data
+
     def transform(self, data: EntityModel):
         collection_name = data.collection_name
         docs = [translation(data.text)]
-        data.metadata['text'] = data.text
-        metadata = [data.metadata]
+        metadata = [self.trans(data.metadata)]
         ids = None
         return collection_name, docs, metadata, ids
 

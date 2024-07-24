@@ -59,6 +59,11 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 3303 --reload
     env_file:
       - .env
+    #healthcheck:
+    #  test: curl -f text2vec:3303/api/openapi || exit 1
+    #  interval: 5s
+    #  timeout: 5s
+    #  retries: 5
     environment:
       PYTHONPATH: /app
     volumes:
@@ -86,6 +91,7 @@ services:
   intent_api:
     container_name: intent_api
     command: uvicorn main:app --host 0.0.0.0 --port 3303 --reload
+    restart: always
     env_file:
       - .env
     environment:

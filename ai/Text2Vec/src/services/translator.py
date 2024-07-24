@@ -21,6 +21,9 @@ def init_translator():
                     max_length = settings.translation.max_length)
 
 def translation(text: str) -> str:
-    output = translation_pipeline(text)
-    translated_text = output[0]["translation_text"]
+    translated_text = ''
+    for t in text.split('. '):
+        output = translation_pipeline(t)
+        translated = output[0]["translation_text"]
+        translated_text = translated_text  + translated + '. '
     return translated_text
