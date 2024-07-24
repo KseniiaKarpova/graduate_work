@@ -8,7 +8,7 @@ class SettingsModelV1(BaseSettings):
     joiner: str = path + "am/joiner.int8.onnx"
     tokens: str = path + "lang/tokens.txt"
     num_threads: int = 4
-    sample_rate: int = 16000
+    sample_rate: int = 8000
     decoding_method: str = "greedy_search"
     hotwords: str = path + 'hot_words_ru_v1.txt'
 
@@ -20,6 +20,6 @@ class SettingsModelV2(BaseSettings):
     joiner: str = path + "am-onnx/joiner.onnx"
     tokens: str = path + "lang/tokens.txt"
     num_threads: int = 4
-    sample_rate: int = 16000
+    sample_rate: int = 8000
     decoding_method: str = "greedy_search"
     hotwords: str = path + 'hot_words_ru_v2.txt'

@@ -40,7 +40,7 @@ class Service:
         result = ''
         for start, stop in self.detector.vad_detect_2(samples):
             try:
-                text = self.detector.transcribe(samples[start: stop], 16000).strip()
+                text = self.detector.transcribe(samples[start: stop], 8000).strip()
                 logger.info(text)
                 if len(text) > 2:
                     result = result + " " + text
