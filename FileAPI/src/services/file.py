@@ -1,12 +1,9 @@
-from functools import lru_cache
-
-from fastapi import Depends, UploadFile
-
 from core.config import bucket_settings
 from db import AbstractStorage
 from db.minio import MinioStorage
 from db.postgres import PostgresStorage
 from db.proxy_storage import ProxyStorage
+from fastapi import Depends, UploadFile
 from services import AbstractService
 
 
@@ -22,7 +19,12 @@ class FileService(AbstractService):
 
     async def download(self, short_name):
         data = await self.stopage.get(bucket=bucket_settings.bucket_movies,
-                                           short_name=short_name,)
+                                      short_name=short_name,)
+        return data
+
+    async def download_stream(self, short_name):
+        data = await self.stopage.get(bucket=bucket_settings.bucket_movies,
+                                      short_name=short_name,)
         return data
 
 

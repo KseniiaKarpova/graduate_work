@@ -1,14 +1,14 @@
 from elastic.config import URL
 from elastic.index_settings import settings
 from elastic.mappings import genres_mappings, movies_mappings, persons_mappings
-from elasticsearch.client import Elasticsearch
 from elastic.text2vec import insert_to_entity
+from elasticsearch.client import Elasticsearch
 
 
 class Index:
     __index_name__ = None
-    __settings__ : dict = None
-    __mappings__ : dict = None
+    __settings__: dict = None
+    __mappings__: dict = None
     __client__ = Elasticsearch([URL])
 
     @classmethod
@@ -24,7 +24,7 @@ class Index:
                 val = {
                     'id': str(datum['id']),
                     'title': datum['title'],
-                    'writers_names' : ", ".join(datum['writers_names']),
+                    'writers_names': ", ".join(datum['writers_names']),
                     'writers_cont': len(datum['writers_names']),
                     'actors_names': ", ".join(datum['actors_names']),
                     'actors_cont': len(datum['actors_names']),

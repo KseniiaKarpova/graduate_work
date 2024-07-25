@@ -1,10 +1,10 @@
-from storages import BaseStorage
+from typing import List
+
 from db import BaseVecDB
+from exceptions import created
 from shemas import ResponseDB
 from shemas.intent import IntentModel
-from services.translator import translation
-from exceptions import created
-from typing import List
+from storages import BaseStorage
 
 
 class IntentStorage(BaseStorage):
@@ -16,7 +16,7 @@ class IntentStorage(BaseStorage):
     def transform(self, data: IntentModel):
         collection_name = self.collection_name
         data.metadata['name'] = data.name
-        metadata = [data.metadata]*len(data.texts)
+        metadata = [data.metadata] * len(data.texts)
         ids = data.ids
         return collection_name, data.texts, metadata, ids
 

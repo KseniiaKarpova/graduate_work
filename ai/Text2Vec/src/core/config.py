@@ -1,5 +1,4 @@
 from fastapi import Query
-from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -51,7 +50,6 @@ class APPSettings(BaseSettings):
     translation: TranslatorSettings = TranslatorSettings()
     redis: RedisSettings = RedisSettings()
     auth: AuthSettings = AuthSettings()
-
 
 
 settings = APPSettings()

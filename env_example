@@ -200,3 +200,8 @@ INTENT_API_PORT=3303
 
 TTS_API_HOST=tts_api
 TTS_API_PORT=3004
+
+history_host=history_api
+history_port=3001
+history_uri=api/v1/chat-history
+

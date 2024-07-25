@@ -1,8 +1,9 @@
 import uuid
+
 from core.logger import logger
-from model import BaseModelManager
+from model import BaseModelManager, v2
 from vosk_tts import Model, Synth
-from model import v2
+
 
 def init(model_name):
     model = Model(model_name=model_name)

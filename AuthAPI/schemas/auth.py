@@ -1,11 +1,10 @@
+import re
 from datetime import timedelta
 from uuid import UUID
 
 from core.config import settings
-from core.hasher import DataHasher
+from core.hasher import DataHasher, fake
 from pydantic import BaseModel, Field, validator
-from core.hasher import fake
-import re
 
 
 class EmailValidator:

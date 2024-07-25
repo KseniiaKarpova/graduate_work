@@ -1,10 +1,11 @@
+from uuid import uuid4
+
+from aiohttp import ClientResponse, ClientSession, FormData
 from core.config import settings
-from aiohttp import ClientSession, FormData, ClientResponse
-from utils.request import get_http_client, HttpClient
+from core.handlers import require_access_token
 from fastapi import Depends, UploadFile
 from fastapi.responses import FileResponse
-from core.handlers import require_access_token
-from uuid import uuid4
+from utils.request import HttpClient, get_http_client
 
 
 class AudioService:
@@ -56,6 +57,6 @@ def get_service(
         file: UploadFile,
         session: HttpClient = Depends(get_http_client),
         credentials=Depends(require_access_token),
-        ) -> AudioService:
+) -> AudioService:
     jwt_handler, token = credentials
     return AudioService(session=session, audio=file, token=token)

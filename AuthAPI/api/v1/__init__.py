@@ -1,7 +1,5 @@
+from api.v1 import auth, role, socials, user, user_history
 from fastapi import APIRouter
-
-from api.v1 import role, user_history, socials, auth, user
-
 
 v1_router = APIRouter(prefix='/v1')
 

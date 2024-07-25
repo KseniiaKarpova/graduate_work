@@ -1,12 +1,11 @@
 import logging
 
-from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
-
-from middleware.request_log import RequestLogMiddleware
-from starlette.middleware.sessions import SessionMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
 from core import config
+from fastapi import FastAPI
+from fastapi.middleware.gzip import GZipMiddleware
+from middleware.request_log import RequestLogMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 settings = config.APPSettings()
 

@@ -1,19 +1,21 @@
 from functools import lru_cache
-from fastapi import Depends, UploadFile
-import numpy as np
 from typing import List
-from services import MainDetector
-from exceptions import file_error, big_file
+
+import numpy as np
 from core.logger import logger
+from exceptions import big_file, file_error
+from fastapi import Depends, UploadFile
+from services import MainDetector
+
 
 class Detector(MainDetector):
 
     async def file_to_frame(self, upload_file: UploadFile):
         if upload_file.size > 300500:
-            raise  big_file
+            raise big_file
 
         if upload_file.content_type != 'audio/wav' and upload_file.content_type != 'audio/x-wav':
-            raise  file_error
+            raise file_error
         try:
             audio_bytes = await upload_file.read()
             samples = np.frombuffer(audio_bytes, dtype=np.int16)
@@ -49,9 +51,8 @@ class Service:
 
         return {'text': result.strip()}
 
-
     async def batch_text(self, files: List[UploadFile]):
-        samples=[]
+        samples = []
         for f in files:
             s = await self.detector.file_to_frame(upload_file=f)
             samples.append(s)
@@ -63,4 +64,3 @@ def detector_service(
     detector: Detector = Depends(Detector)
 ) -> Service:
     return Service(detector=detector)
-

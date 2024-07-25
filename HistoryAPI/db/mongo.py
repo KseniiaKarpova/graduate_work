@@ -1,6 +1,5 @@
-from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import Depends
-
+from motor.motor_asyncio import AsyncIOMotorClient
 
 mongo_client: AsyncIOMotorClient | None = None  # type: ignore
 

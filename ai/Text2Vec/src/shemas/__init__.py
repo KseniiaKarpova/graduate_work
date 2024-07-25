@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
+
 
 class ResponseDB(BaseModel):
     id: str | int = Field(description='Item ID')

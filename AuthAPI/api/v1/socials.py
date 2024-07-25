@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Request, Query, Depends
-from services.socials import SocialAccountService, get_social_service
-from core.oauth2 import google_client
 from core.config import settings
-from schemas.auth import SocialData, UserAuthData
+from core.oauth2 import google_client
+from fastapi import APIRouter, Depends, Query, Request
 from models.models import SocialNetworksEnum
+from schemas.auth import SocialData, UserAuthData
+from services.socials import SocialAccountService, get_social_service
 
 router = APIRouter(prefix="/socials")
 

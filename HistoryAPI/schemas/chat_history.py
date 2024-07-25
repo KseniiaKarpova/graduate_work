@@ -1,6 +1,7 @@
 from uuid import UUID
-from pydantic import BaseModel, Field
+
 from models.history import ChatHistory
+from pydantic import BaseModel, Field
 
 
 class ChatHistoryDTo(BaseModel):
@@ -10,7 +11,6 @@ class ChatHistoryDTo(BaseModel):
     intent: str | None = Field(None)
     entity: str | None = Field(None)
     metadata: dict | None = Field(None)
-
 
 
 class ChatHistoryList(BaseModel):

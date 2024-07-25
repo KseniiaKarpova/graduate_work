@@ -1,12 +1,13 @@
-from model.v2.manager import VoskModelManager
-from model import BaseModelManager
-from functools import lru_cache
-from utils import upload_files
-from core.config import settings
-from fastapi import Depends, UploadFile
-from fastapi import HTTPException, Request, status
-import exceptions
 import os
+from functools import lru_cache
+
+import exceptions
+from core.config import settings
+from fastapi import Depends, Request
+from model import BaseModelManager
+from model.v2.manager import VoskModelManager
+from utils import upload_files
+
 
 class TTSServices:
 
@@ -16,7 +17,7 @@ class TTSServices:
     def text_to_voice(self, text: str):
         return self.model_manger.text_to_voice(text=text)
 
-    async def save_file(self, path_file, request:Request):
+    async def save_file(self, path_file, request: Request):
         try:
             response_data = await upload_files(path_file, settings.file.path, request)
             return {'short_name': response_data.get("short_name")}

@@ -1,16 +1,17 @@
 from functools import lru_cache
-from fastapi import Depends
-from core.hasher import DataHasher
-from services import BaseService
-from services.broadcast import BroadcastService
-from storages.user import UserStorage
-from schemas.auth import UserCredentials
-from exceptions import user_created
-from sqlalchemy.ext.asyncio import AsyncSession
-from db.postgres import create_async_session
+
+from async_fastapi_jwt_auth import AuthJWT
 from core.config import settings
 from core.handlers import AuthHandler
-from async_fastapi_jwt_auth import AuthJWT
+from core.hasher import DataHasher
+from db.postgres import create_async_session
+from exceptions import user_created
+from fastapi import Depends
+from schemas.auth import UserCredentials
+from services import BaseService
+from services.broadcast import BroadcastService
+from sqlalchemy.ext.asyncio import AsyncSession
+from storages.user import UserStorage
 
 
 class AuthService(BaseService):

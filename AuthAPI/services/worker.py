@@ -1,5 +1,6 @@
-from services import BaseService
 from uuid import UUID
+
+from services import BaseService
 
 
 class BaseWorkerService(BaseService):

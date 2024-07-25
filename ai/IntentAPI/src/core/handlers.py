@@ -5,10 +5,10 @@ from typing import Optional
 
 from core.config import settings
 from db.redis import get_redis
-from exceptions import forbidden_error, server_error, wrong_data
+from exceptions import forbidden_error, wrong_data, token_expired
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import jwt, ExpiredSignatureError
+from jose import ExpiredSignatureError, jwt
 from schemas.auth import JWTUserData
 
 
@@ -24,6 +24,7 @@ def decode_token(token: str) -> Optional[dict]:
         raise token_expired
     except Exception:
         raise wrong_data
+
 
 async def jwt_user_data(subject: dict):
     subject: dict = json.loads(subject)

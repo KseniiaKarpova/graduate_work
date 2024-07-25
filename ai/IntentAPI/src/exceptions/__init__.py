@@ -1,5 +1,9 @@
 from fastapi import HTTPException, status
 
+token_expired = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="Token expired")
+
 unauthorized = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Bad username or password")
@@ -44,10 +48,12 @@ wrong_data = HTTPException(
     status_code=status.HTTP_406_NOT_ACCEPTABLE,
     detail="wrong data")
 
+
 def return_bad_request(massage: str) -> HTTPException:
     HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=massage)
+
 
 def return_fail(massage: str) -> HTTPException:
     HTTPException(

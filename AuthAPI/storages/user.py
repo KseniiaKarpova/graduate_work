@@ -1,12 +1,12 @@
-from models.models import Role, User, UserRole
-from sqlalchemy import func, select
-from storages import AlchemyBaseStorage
-from schemas.auth import SocialData
 from core.hasher import DataHasher
-from storages.social_account import SocialAccountStorage
 from db.postgres import commit_async_session
-from sqlalchemy.orm import Query
 from fastapi_pagination.ext.sqlalchemy import paginate
+from models.models import Role, User, UserRole
+from schemas.auth import SocialData
+from sqlalchemy import func, select
+from sqlalchemy.orm import Query
+from storages import AlchemyBaseStorage
+from storages.social_account import SocialAccountStorage
 
 
 class UserStorage(AlchemyBaseStorage):

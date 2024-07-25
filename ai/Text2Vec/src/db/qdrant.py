@@ -1,21 +1,25 @@
-from qdrant_client import AsyncQdrantClient, models
-from db import BaseVecDB
-from exceptions import try_retry_after, return_bad_request, not_found, empty
-from shemas import ResponseDB
 from typing import List
+
 from core.config import settings
+from db import BaseVecDB
+from exceptions import empty, return_bad_request, try_retry_after
+from qdrant_client import AsyncQdrantClient
+from shemas import ResponseDB
 
 THRESHOLD = settings.db.threshold or 0.9
 
 client: AsyncQdrantClient = None
 
+
 def get_client() -> AsyncQdrantClient:
     return client
+
 
 def connect(host, port, model) -> AsyncQdrantClient:
     client = AsyncQdrantClient(url=f'http://{host}:{port}')
     client.set_model(model)
-    return  client
+    return client
+
 
 class QdrantDB(BaseVecDB):
     async def add(self, collection_name, docs, metadata, ids):
@@ -29,17 +33,16 @@ class QdrantDB(BaseVecDB):
 
             return ans
         except ValueError:
-            raise return_bad_request(f"I do not know anything about {collection_name} or Id is not a valid UUID. Check the correctness of the data being uploaded")
+            raise return_bad_request(
+                f"I do not know anything about {collection_name} or Id is not a valid UUID. Check the correctness of the data being uploaded")
         except Exception:
             raise try_retry_after
-
 
     async def search(self, collection_name: str, query_text: str) -> ResponseDB:
         data = await self.search_many(collection_name, query_text, limit=1)
         return data[0]
 
-
-    async def search_many(self, collection_name: str, query_text: str, limit: int=1) -> List[ResponseDB]:
+    async def search_many(self, collection_name: str, query_text: str, limit: int = 1) -> List[ResponseDB]:
         if query_text == '' or query_text == ' ':
             raise return_bad_request("Запрос пустой")
 
@@ -51,7 +54,8 @@ class QdrantDB(BaseVecDB):
             )
 
         except ValueError:
-            raise return_bad_request(f"I do not know anything about {collection_name}. Check the correctness of the data being uploaded")
+            raise return_bad_request(
+                f"I do not know anything about {collection_name}. Check the correctness of the data being uploaded")
         except Exception:
             raise try_retry_after
 

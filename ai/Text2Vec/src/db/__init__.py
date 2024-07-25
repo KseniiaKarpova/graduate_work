@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, List
+
 from shemas import ResponseDB
-from typing import List
+
 
 class BaseVecDB(ABC):
 

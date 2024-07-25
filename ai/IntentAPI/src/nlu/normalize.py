@@ -1,5 +1,5 @@
-from typing import Tuple
 import os
+from typing import Tuple
 
 
 def LCS(s1, s2):

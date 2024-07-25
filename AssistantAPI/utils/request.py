@@ -1,5 +1,6 @@
-from aiohttp import ClientSession, ClientResponse, FormData, ClientConnectionError
-from typing import Generator
+from aiohttp import (ClientConnectionError, ClientResponse, ClientSession,
+                     FormD
+ata)
 from fastapi import HTTPException
 
 

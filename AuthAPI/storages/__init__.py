@@ -2,13 +2,12 @@ from abc import ABC
 
 from db.postgres import commit_async_session
 from exceptions import integrity_error, order_by_field_not_found
+from fastapi_pagination.ext.sqlalchemy import paginate
 from models.models import Base
 from sqlalchemy import and_, asc, desc, select, update
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import Query
+from sqlalchemy.orm import Query, Session
 from utils.jaeger import tracer
-from fastapi_pagination.ext.sqlalchemy import paginate
 
 
 class AlchemyBaseStorage(ABC):

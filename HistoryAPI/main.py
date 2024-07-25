@@ -1,31 +1,26 @@
 import logging
-import uvicorn
+from contextlib import asynccontextmanager
 
+import uvicorn
+from api import setup_routers
+from async_fastapi_jwt_auth.exceptions import AuthJWTException
+from core import config, logger
+from core.logger import setup_root_logger
+from db import init_db, mongo, redis
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse, ORJSONResponse
 from fastapi_pagination import add_pagination
-
-from utils.constraint import RequestLimit
-from utils.jaeger import configure_tracer
-
-from core import config, logger
-from core.logger import LOGGING, setup_root_logger
-from api import setup_routers
-from db import redis, init_db, mongo
-
-from contextlib import asynccontextmanager
-
-from async_fastapi_jwt_auth.exceptions import AuthJWTException
-
 from middleware.main import setup_middleware
+from motor.motor_asyncio import AsyncIOMotorClient
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from redis.asyncio import Redis
-from motor.motor_asyncio import AsyncIOMotorClient
-
+from utils.constraint import RequestLimit
+from utils.jaeger import configure_tracer
 
 settings = config.APPSettings()
 
 setup_root_logger()
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):

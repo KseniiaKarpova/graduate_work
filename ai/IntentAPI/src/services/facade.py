@@ -1,13 +1,15 @@
-from utils.request_api import post_request, get_request
-import yaml
-from models.bot import AnswerModel
-from nlu.normalize import number_to_words, inflect_with_num, LCS
-from functools import lru_cache
-from fastapi import HTTPException, Request, status
-from core.config import settings
 import random
 import re
+from functools import lru_cache
 
+import yaml
+from core.config import settings
+from core.logger import logger
+from fastapi import Request
+from models.bot import AnswerModel, ChatHistoryItem
+from nlu.normalize import LCS, inflect_with_num, number_to_words
+from services.history import HistoryServices
+from utils.request_api import get_request, post_request
 
 facade = None
 pars = '[type]'
@@ -15,18 +17,21 @@ intent = 'intent'
 entity = 'entity'
 api = settings.cinema.url
 
+
 @lru_cache
 def get_facade():
     return facade
 
+
 class Facade:
-    pattern = re.compile("\((.*)\)")
+    pattern = re.compile("\\((.*)\\)")
     pattern_result = '{result}'
 
     def __init__(self,
                  url: str,
                  file: str):
         self.url = url
+        self.history = HistoryServices()
         with open(file) as fh:
             self.conf = yaml.load(fh, Loader=yaml.FullLoader)
 
@@ -36,7 +41,7 @@ class Facade:
             json_data = {
                 'name': item.get('name'),
                 'texts': item.get('query'),
-                'ids': [i+last for i in range(len(item.get('query')))],
+                'ids': [i + last for i in range(len(item.get('query')))],
                 'metadata': {},
             }
             headers = {
@@ -45,38 +50,47 @@ class Facade:
                 'X-Forwarded-For': 'Intent',
                 'X-Request-Id': str(item.get('id'))
             }
-            response = await post_request(self.url.replace(pars, intent), head=headers, body=json_data)
+            await post_request(self.url.replace(pars, intent), head=headers, body=json_data)
             last = last + len(item.get('query'))
 
-
-    def empty(self) -> AnswerModel:
+    def empty(self, text) -> AnswerModel:
         return AnswerModel(
+            query=text,
             text=random.choice(self.conf.get('no_answer')),
             intent='No answer',
-            metadata = {}
+            metadata={}
         )
 
-    async def ask(self, text: str, request: Request) -> AnswerModel:
+    async def ask(self, text: str, user_id: str, request: Request) -> AnswerModel:
         cl = await self.search_class(text, request)
+        logger.info(text + str(cl))
         if not cl:
-            return self.empty()
+            return self.empty(text)
         else:
             intent = cl.get('name')
             data = self.get_entity(intent)
             if not data:
-                return self.empty()
+                return self.empty(text)
             lcs = LCS(text, cl['document'])
             entity = data.get('entity')
-            text.replace(lcs, '')
-            item = await self.search_entity(text.replace(lcs, ''), entity, request)
+
+            item = await self.search_entity(text.replace(lcs, ''),
+                                            entity,
+                                            request)
             if not item:
-                return self.empty()
+                item = await self.history.get_last_entity(entity,
+                                                          user_id,
+                                                          request)
+            logger.info(item)
+            if not item:
+                return self.empty(text)
             else:
                 return AnswerModel(
+                    query=text,
                     text=self.refactor_answer(data, item),
                     intent=intent,
                     entity=entity,
-                    metadata = item
+                    metadata=item
                 )
 
     def refactor_answer(self, conf, result):
@@ -106,8 +120,8 @@ class Facade:
         headers = {
             'accept': 'application/json',
             'Content-Type': 'application/json',
-            'X-Forwarded-For': request.headers.get('X-Forwarded-For'),
-            'X-Request-Id': request.headers.get('X-Request-Id')
+            'X-Forwarded-For': request.headers.get('X-Forwarded-For') or request.headers.get('x-request-id'),
+            'X-Request-Id': request.headers.get('X-Request-Id') or request.headers.get('x-request-id')
         }
         try:
             params = {'text': text}
@@ -118,12 +132,11 @@ class Facade:
         except Exception:
             return None
 
-
-    async def search_entity(self, text: str, type,  request: Request):
-        res = await self.search(request = request,
-                     text=text,
-                     collection=entity,
-                     type=type)
+    async def search_entity(self, text: str, type, request: Request):
+        res = await self.search(request=request,
+                                text=text,
+                                collection=entity,
+                                type=type)
         return res
 
     async def search_class(self, text: str, request: Request):
@@ -132,3 +145,16 @@ class Facade:
                                 collection=intent,
                                 type=None)
         return res
+
+    async def log(self, item: AnswerModel,
+                  user_id,
+                  request: Request):
+        await self.history.save(ChatHistoryItem(
+            user_id=user_id,
+            query=item.query,
+            text=item.text,
+            intent=item.intent,
+            entity=item.entity,
+            metadata=item.metadata
+        ),
+            request)

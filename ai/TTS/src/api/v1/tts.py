@@ -1,9 +1,7 @@
-from service.tts_service import get_tts_service, TTSServices
-from fastapi.responses import FileResponse
-from fastapi import APIRouter, Depends, BackgroundTasks, Request
 import os
-from schemas.file import File
 
+from fastapi import APIRouter, BackgroundTasks, Depends, Request
+from service.tts_service import TTSServices, get_tts_service
 
 router = APIRouter()
 

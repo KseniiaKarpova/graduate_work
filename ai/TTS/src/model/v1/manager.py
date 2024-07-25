@@ -1,19 +1,18 @@
 import base64
 import io
 import os
-import soundfile as sf
 import uuid
 import wave
-import torch
+
 import numpy as np
-from typing import List
+import soundfile as sf
+import torch
 from core.logger import logger
+from model import BaseModelManager, v1
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
 from TTS.utils.generic_utils import get_user_data_dir
 from TTS.utils.manage import ModelManager
-from model import BaseModelManager
-from model import v1
 
 
 def init(set):
@@ -33,11 +32,11 @@ def init(set):
     config.load_json(os.path.join(model_path, "config.json"))
     v1.Model = Xtts.init_from_config(config)
     v1.get_model().load_checkpoint(config, checkpoint_dir=model_path, eval=True, use_deepspeed=False)
-    #model.to(device)
+    # model.to(device)
     logger.info("XTTS Loaded.")
     v1.gpt_cond_latent, v1.speaker_embedding = v1.get_model().get_conditioning_latents('./model/v1/voices/roman.wav')
     v1.gpt_cond_latent = v1.get_gpt_cond_latent().cpu().squeeze().half().tolist()
-    v1.speaker_embedding =  v1.get_speaker_embedding().cpu().squeeze().half().tolist()
+    v1.speaker_embedding = v1.get_speaker_embedding().cpu().squeeze().half().tolist()
     logger.info("Done")
 
 
@@ -52,7 +51,7 @@ class XttsModelManager(BaseModelManager):
                             sample_rate=24000,
                             sample_width=2,
                             channels=1
-    ):
+                            ):
         """Return base64 encoded audio"""
         wav_buf = io.BytesIO()
         with wave.open(wav_buf, "wb") as vfout:
@@ -78,7 +77,7 @@ class XttsModelManager(BaseModelManager):
         wav = (wav * 32767).astype(np.int16)
         return wav
 
-    def text_to_voice(self, text: str, language:str = 'ru'):
+    def text_to_voice(self, text: str, language: str = 'ru'):
         speaker_embedding = torch.tensor(v1.speaker_embedding).unsqueeze(0).unsqueeze(-1)
         gpt_cond_latent = torch.tensor(v1.gpt_cond_latent).reshape((-1, 1024)).unsqueeze(0)
         out = v1.Model.inference(

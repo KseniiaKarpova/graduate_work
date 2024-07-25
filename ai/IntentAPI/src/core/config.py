@@ -34,6 +34,17 @@ class Text2VecSettings(BaseSettings):
         return f"http://{self.host}:{self.port}/api/v1/[type]/"
 
 
+class HistorySettings(BaseSettings):
+    host: str = ...
+    port: int = ...
+    uri: str = ...
+    model_config: str = SettingsConfigDict(env_prefix='history_')
+
+    @property
+    def url(self):
+        return f"http://{self.host}:{self.port}/{self.uri}"
+
+
 class CinemaSettings(BaseSettings):
     host: str = ...
     port: int = ...
@@ -43,6 +54,7 @@ class CinemaSettings(BaseSettings):
     def url(self):
         return f"http://{self.host}:{self.port}"
 
+
 class APPSettings(BaseSettings):
     project_name: str = 'Intent API'
     conf: str = 'conf.yaml'
@@ -50,6 +62,7 @@ class APPSettings(BaseSettings):
     auth: AuthSettings = AuthSettings()
     t2v: Text2VecSettings = Text2VecSettings()
     cinema: CinemaSettings = CinemaSettings()
+    history: HistorySettings = HistorySettings()
 
 
 settings = APPSettings()

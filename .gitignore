@@ -1,6 +1,8 @@
 # IntellijIdea files
 *.iml
 out
+ai/ASR/src/models/__init__.py
+ai/ASR/src/models/v2/
 */.ipynb_checkpoints/
 .idea/
 logs/

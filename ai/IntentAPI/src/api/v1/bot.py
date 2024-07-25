@@ -1,8 +1,7 @@
-from services.facade import get_facade
-from fastapi import APIRouter, Request, Depends
-from core.handlers import require_access_token, JwtHandler
+from core.handlers import JwtHandler, require_access_token
+from fastapi import APIRouter, Depends, Request
 from models.bot import AnswerModel
-
+from services.facade import get_facade
 
 router = APIRouter()
 
@@ -16,6 +15,7 @@ async def ask(
     jwt_handler: JwtHandler = Depends(require_access_token),
 ) -> AnswerModel:
     user = await jwt_handler.get_current_user()
-    user_id = user.uuid
-    result = await get_facade().ask(text, request)
+    user_id = str(user.uuid)
+    result = await get_facade().ask(text, user_id, request)
+    await get_facade().log(result, user_id, request)
     return result

@@ -1,8 +1,10 @@
-import aiohttp
 import os
+
+import aiohttp
 from fastapi import Request
 
-async def upload_files(file_path:str, server_url, request: Request):
+
+async def upload_files(file_path: str, server_url, request: Request):
     async with aiohttp.ClientSession() as session:
         data = aiohttp.FormData()
         filename = os.path.basename(file_path)
@@ -26,7 +28,5 @@ async def upload_files(file_path:str, server_url, request: Request):
             headers=headers,
             ssl=False,
         ) as response:
-            status = response.status
             body = await response.json()
             return body
-
