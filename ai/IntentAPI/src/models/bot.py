@@ -6,4 +6,3 @@ class AnswerModel(BaseModel):
     intent: str = Field(None, description='intent')
     entity: str = Field(None, description='entity')
     metadata: dict = Field(None, description='More info')
-
