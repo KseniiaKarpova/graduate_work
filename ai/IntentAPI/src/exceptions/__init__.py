@@ -40,6 +40,10 @@ server_error = HTTPException(
     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     detail="Sorry...")
 
+wrong_data = HTTPException(
+    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+    detail="wrong data")
+
 def return_bad_request(massage: str) -> HTTPException:
     HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,

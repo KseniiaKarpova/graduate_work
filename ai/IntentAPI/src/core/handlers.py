@@ -5,10 +5,10 @@ from typing import Optional
 
 from core.config import settings
 from db.redis import get_redis
-from exceptions import forbidden_error, server_error
+from exceptions import forbidden_error, server_error, wrong_data
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import jwt
+from jose import jwt, ExpiredSignatureError
 from schemas.auth import JWTUserData
 
 
@@ -18,13 +18,12 @@ def decode_token(token: str) -> Optional[dict]:
             token, settings.auth.secret_key, algorithms=[
                 settings.auth.jwt_algorithm])
         if decoded_token['exp'] < time.time():
-            raise HTTPException(
-                status_code=http.HTTPStatus.FORBIDDEN,
-                detail='Invalid or expired token.')
+            raise forbidden_error
         return decoded_token
+    except ExpiredSignatureError:
+        raise token_expired
     except Exception:
-        raise server_error
-
+        raise wrong_data
 
 async def jwt_user_data(subject: dict):
     subject: dict = json.loads(subject)

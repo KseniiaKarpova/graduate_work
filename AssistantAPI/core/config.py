@@ -60,6 +60,36 @@ class WorkerService(BaseSettings):
         return f"http://{self.host}:{self.port}/api/v1"
 
 
+class ASR_API(BaseSettings):
+    host: str = ...
+    port: str = ...
+    model_config: str = SettingsConfigDict(env_prefix='asr_api_')
+
+    @property
+    def path(self) -> str:
+        return f"http://{self.host}:{self.port}/api/v1/audio/transcript/1/lang"
+
+
+class INTENT_API(BaseSettings):
+    host: str = ...
+    port: str = ...
+    model_config: str = SettingsConfigDict(env_prefix='intent_api_')
+
+    @property
+    def path(self) -> str:
+        return f"http://{self.host}:{self.port}/api/v1/ask/"
+
+
+class TTS_API(BaseSettings):
+    host: str = ...
+    port: str = ...
+    model_config: str = SettingsConfigDict(env_prefix='tts_api_')
+
+    @property
+    def path(self) -> str:
+        return f"http://{self.host}:{self.port}/api/v1/text2speach/"
+
+
 class APPSettings(BaseSettings):
     project_name: str = 'Assistant API'
     redis: RedisSettings = RedisSettings()
@@ -68,6 +98,9 @@ class APPSettings(BaseSettings):
     jaeger: JaegerSettings = JaegerSettings()
     worker: WorkerService = WorkerService()
     file_service: FileAPISettings = FileAPISettings()
+    asr_api: ASR_API = ASR_API()
+    intent_api: INTENT_API = INTENT_API()
+    tts_api: TTS_API = TTS_API()
 
 
 settings = APPSettings()
