@@ -67,7 +67,7 @@ class ASR_API(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}/api/v1/audio/transcript/1/lang"
+        return f"http://{self.host}:{self.port}/api/v1/audio/transcript/1/long"
 
 
 class INTENT_API(BaseSettings):

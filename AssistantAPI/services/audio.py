@@ -16,7 +16,6 @@ class AudioService:
     async def proceed(self):
         audio_text = await self.speach_to_text()
         intent_text = await self.get_intents(text=audio_text)
-        print(intent_text)
         return await self.text_to_speach(text=intent_text)
 
     async def speach_to_text(self):

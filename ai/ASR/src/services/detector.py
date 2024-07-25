@@ -12,7 +12,7 @@ class Detector(MainDetector):
         if upload_file.size > 300500:
             raise  big_file
 
-        if upload_file.content_type != 'audio/wav':
+        if upload_file.content_type != 'audio/wav' and upload_file.content_type != 'audio/x-wav':
             raise  file_error
         try:
             audio_bytes = await upload_file.read()
