@@ -23,8 +23,6 @@ class AuthSettings(BaseSettings):
     model_config: str = SettingsConfigDict(env_prefix='auth_')
 
 
-
-
 class FileAPISettings(BaseSettings):
     host: str = ...
     port: int = ...

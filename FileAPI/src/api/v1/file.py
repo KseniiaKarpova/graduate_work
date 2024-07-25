@@ -4,6 +4,7 @@ from models.file import File
 from services.file import FileService, get_file_service
 from fastapi.responses import StreamingResponse
 from core.handlers import require_access_token, JwtHandler
+from fastapi.responses import FileResponse
 
 
 router = APIRouter()
@@ -28,6 +29,7 @@ async def upload_file(
 
 @router.get(
     "/download-stream/{name}",
+    response_class=FileResponse,
     response_description="stream video file",
     description="File searching",
     summary="stream video file",
