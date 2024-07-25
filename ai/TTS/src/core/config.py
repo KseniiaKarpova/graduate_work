@@ -30,6 +30,16 @@ class TTSModelSettings(BaseSettings):
     name: str = ...
     model_config: str = SettingsConfigDict(env_prefix='tts_')
 
+class FileAPISettings(BaseSettings):
+    host: str = ...
+    port: int = ...
+    url: str = ...
+    model_config: str = SettingsConfigDict(env_prefix='file_api_')
+
+    @property
+    def path(self) -> str:
+        return f"http://{self.host}:{self.port}{self.url}"
+
 
 class Settings(BaseSettings):
     tts: TTSModelSettings = TTSModelSettings()
@@ -39,6 +49,7 @@ class Settings(BaseSettings):
     logger_maxbytes: int = 15000000
     logger_mod: str = 'a'
     logger_backup_count: int = 5
+    file: FileAPISettings = FileAPISettings()
 
 
 settings = Settings()
