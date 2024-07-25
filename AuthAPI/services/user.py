@@ -1,12 +1,13 @@
 from functools import lru_cache
 from uuid import UUID
-from fastapi import Depends
-from services import BaseService
-from storages.user import UserStorage
-from schemas.auth import UserUpdate
-from sqlalchemy.ext.asyncio import AsyncSession
+
 from db.postgres import create_async_session
 from exceptions import not_found, user_updated
+from fastapi import Depends
+from schemas.auth import UserUpdate
+from services import BaseService
+from sqlalchemy.ext.asyncio import AsyncSession
+from storages.user import UserStorage
 
 
 class UserService(BaseService):

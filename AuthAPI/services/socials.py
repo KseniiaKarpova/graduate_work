@@ -1,12 +1,13 @@
-from fastapi import Depends
-from services import BaseService
-from storages.user import UserStorage, User
 from abc import abstractmethod
-from schemas.auth import SocialData, UserLogin
-from core.handlers import AuthHandler
-from sqlalchemy.ext.asyncio import AsyncSession
-from db.postgres import create_async_session
+
 from async_fastapi_jwt_auth import AuthJWT
+from core.handlers import AuthHandler
+from db.postgres import create_async_session
+from fastapi import Depends
+from schemas.auth import SocialData, UserLogin
+from services import BaseService
+from sqlalchemy.ext.asyncio import AsyncSession
+from storages.user import User, UserStorage
 
 
 class AbstractSocialAuthService(BaseService):

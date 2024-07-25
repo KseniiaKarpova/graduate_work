@@ -1,5 +1,6 @@
-from beanie import Document
 from abc import ABC
+
+from beanie import Document
 
 
 class BaseStorage(ABC):

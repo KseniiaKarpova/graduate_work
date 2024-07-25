@@ -1,8 +1,7 @@
-from services.facade import get_facade
-from fastapi import APIRouter, Request, Depends
-from core.handlers import require_access_token, JwtHandler
+from core.handlers import JwtHandler, require_access_token
+from fastapi import APIRouter, Depends, Request
 from models.bot import AnswerModel
-
+from services.facade import get_facade
 
 router = APIRouter()
 

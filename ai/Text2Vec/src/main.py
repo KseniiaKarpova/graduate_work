@@ -1,15 +1,15 @@
 import logging
 from contextlib import asynccontextmanager
-from db import redis
+
 import uvicorn
-from api.v1 import intent, entity
+from api.v1 import entity, intent
 from core.config import settings
 from core.logger import LOGGING
-from db import qdrant
+from db import qdrant, redis
 from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
-from services import  translator
 from redis.asyncio import Redis
+from services import translator
 from utils.constraint import RequestLimit
 
 
@@ -26,7 +26,6 @@ async def lifespan(app: FastAPI):
     await qdrant.client.close()
 
 
-
 app = FastAPI(
     title=settings.project_name,
     docs_url='/api/openapi',
@@ -41,10 +40,10 @@ async def before_request(request: Request, call_next):
     user = request.headers.get('X-Forwarded-For')
     result = await RequestLimit().is_over_limit(user=user)
     if result:
-       return ORJSONResponse(
-           status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-           content={'detail': 'Too many requests'}
-       )
+        return ORJSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={'detail': 'Too many requests'}
+        )
 
     response = await call_next(request)
     request_id = request.headers.get('X-Request-Id')
@@ -53,8 +52,6 @@ async def before_request(request: Request, call_next):
             status_code=status.HTTP_400_BAD_REQUEST, content={
                 'detail': 'X-Request-Id is required'})
     return response
-
-
 
 
 app.include_router(intent.router, prefix='/api/v1/intent', tags=['intent'])

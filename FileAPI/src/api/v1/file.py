@@ -1,11 +1,9 @@
-from fastapi import APIRouter, Depends, UploadFile
+from core.handlers import require_access_token
 from exceptions import file_not_found
+from fastapi import APIRouter, Depends, UploadFile
+from fastapi.responses import FileResponse, StreamingResponse
 from models.file import File
 from services.file import FileService, get_file_service
-from fastapi.responses import StreamingResponse
-from core.handlers import require_access_token, JwtHandler
-from fastapi.responses import FileResponse
-
 
 router = APIRouter()
 
@@ -20,7 +18,7 @@ router = APIRouter()
 async def upload_file(
         file: UploadFile,
         file_service: FileService = Depends(get_file_service),
-        credentials = Depends(require_access_token)
+        credentials=Depends(require_access_token)
 ) -> File:
     jwt_handler, token = credentials
     await jwt_handler.get_current_user()
@@ -42,7 +40,6 @@ async def download_file(
     if not films:
         raise file_not_found
     return films
-
 
 
 @router.get(

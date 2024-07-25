@@ -1,10 +1,10 @@
+from uuid import UUID
+
 from core.handlers import JwtHandler, require_access_token
 from fastapi import APIRouter, Body, Depends
-from schemas.auth import UserUpdate
-from services.user import get_user_service, UserService
-from uuid import UUID
 from fastapi_pagination import Page
-from schemas.auth import UserData
+from schemas.auth import UserData, UserUpdate
+from services.user import UserService, get_user_service
 
 router = APIRouter(prefix="/user")
 

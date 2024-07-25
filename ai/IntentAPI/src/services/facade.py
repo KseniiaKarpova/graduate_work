@@ -1,15 +1,15 @@
-from utils.request_api import post_request, get_request
-import yaml
-from models.bot import AnswerModel, ChatHistoryItem
-from nlu.normalize import number_to_words, inflect_with_num, LCS
-from functools import lru_cache
-from fastapi import HTTPException, Request, status
-from core.config import settings
 import random
 import re
-from services.history import HistoryServices
-from core.logger import logger
+from functools import lru_cache
 
+import yaml
+from core.config import settings
+from core.logger import logger
+from fastapi import Request
+from models.bot import AnswerModel, ChatHistoryItem
+from nlu.normalize import LCS, inflect_with_num, number_to_words
+from services.history import HistoryServices
+from utils.request_api import get_request, post_request
 
 facade = None
 pars = '[type]'
@@ -17,12 +17,14 @@ intent = 'intent'
 entity = 'entity'
 api = settings.cinema.url
 
+
 @lru_cache
 def get_facade():
     return facade
 
+
 class Facade:
-    pattern = re.compile("\((.*)\)")
+    pattern = re.compile("\\((.*)\\)")
     pattern_result = '{result}'
 
     def __init__(self,
@@ -39,7 +41,7 @@ class Facade:
             json_data = {
                 'name': item.get('name'),
                 'texts': item.get('query'),
-                'ids': [i+last for i in range(len(item.get('query')))],
+                'ids': [i + last for i in range(len(item.get('query')))],
                 'metadata': {},
             }
             headers = {
@@ -48,16 +50,15 @@ class Facade:
                 'X-Forwarded-For': 'Intent',
                 'X-Request-Id': str(item.get('id'))
             }
-            response = await post_request(self.url.replace(pars, intent), head=headers, body=json_data)
+            await post_request(self.url.replace(pars, intent), head=headers, body=json_data)
             last = last + len(item.get('query'))
-
 
     def empty(self, text) -> AnswerModel:
         return AnswerModel(
             query=text,
             text=random.choice(self.conf.get('no_answer')),
             intent='No answer',
-            metadata = {}
+            metadata={}
         )
 
     async def ask(self, text: str, user_id: str, request: Request) -> AnswerModel:
@@ -78,8 +79,8 @@ class Facade:
                                             request)
             if not item:
                 item = await self.history.get_last_entity(entity,
-                                                   user_id,
-                                                   request)
+                                                          user_id,
+                                                          request)
             logger.info(item)
             if not item:
                 return self.empty(text)
@@ -89,7 +90,7 @@ class Facade:
                     text=self.refactor_answer(data, item),
                     intent=intent,
                     entity=entity,
-                    metadata = item
+                    metadata=item
                 )
 
     def refactor_answer(self, conf, result):
@@ -131,12 +132,11 @@ class Facade:
         except Exception:
             return None
 
-
-    async def search_entity(self, text: str, type,  request: Request):
-        res = await self.search(request = request,
-                     text=text,
-                     collection=entity,
-                     type=type)
+    async def search_entity(self, text: str, type, request: Request):
+        res = await self.search(request=request,
+                                text=text,
+                                collection=entity,
+                                type=type)
         return res
 
     async def search_class(self, text: str, request: Request):
@@ -150,11 +150,11 @@ class Facade:
                   user_id,
                   request: Request):
         await self.history.save(ChatHistoryItem(
-                user_id=user_id,
-                query=item.query,
-                text=item.text,
-                intent=item.intent,
-                entity=item.entity,
-                metadata=item.metadata
-            ),
+            user_id=user_id,
+            query=item.query,
+            text=item.text,
+            intent=item.intent,
+            entity=item.entity,
+            metadata=item.metadata
+        ),
             request)

@@ -11,8 +11,8 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from redis.asyncio import Redis
-from utils.jaeger import configure_tracer
 from utils.constraint import RequestLimit
+from utils.jaeger import configure_tracer
 
 settings = config.Settings()
 
@@ -48,10 +48,10 @@ async def before_request(request: Request, call_next):
     user = request.headers.get('X-Forwarded-For')
     result = await RequestLimit().is_over_limit(user=user)
     if result:
-       return ORJSONResponse(
-           status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-           content={'detail': 'Too many requests'}
-       )
+        return ORJSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={'detail': 'Too many requests'}
+        )
 
     response = await call_next(request)
     request_id = request.headers.get('X-Request-Id')

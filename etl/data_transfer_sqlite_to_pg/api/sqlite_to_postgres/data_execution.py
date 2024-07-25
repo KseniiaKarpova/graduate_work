@@ -53,6 +53,7 @@ class SqlExecuter:
 
 class PostgresSaver(SqlExecuter):
     """Обработка данных для Postgres """
+
     def get_count_rows(self, table_name: str, colums_name: str) -> int:
         return len(self.extract_data(table_name, colums_name))
 
@@ -66,9 +67,9 @@ class PostgresSaver(SqlExecuter):
             curs = self.connect.cursor()
             bind_values = [astuple(row) for row in data]
             query = f'''
-                INSERT INTO content.{table_name}  
-                ({", ".join(colums_name)}) 
-                VALUES ({col_count}) 
+                INSERT INTO content.{table_name}
+                ({", ".join(colums_name)})
+                VALUES ({col_count})
                 ON CONFLICT ({", ".join(conflict_name_colums)}) DO NOTHING;
             '''
             execute_batch(curs, query, bind_values)

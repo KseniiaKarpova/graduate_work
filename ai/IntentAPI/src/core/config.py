@@ -54,6 +54,7 @@ class CinemaSettings(BaseSettings):
     def url(self):
         return f"http://{self.host}:{self.port}"
 
+
 class APPSettings(BaseSettings):
     project_name: str = 'Intent API'
     conf: str = 'conf.yaml'

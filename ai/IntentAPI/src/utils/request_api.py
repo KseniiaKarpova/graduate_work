@@ -1,5 +1,6 @@
 import aiohttp
-from fastapi import status, HTTPException
+from fastapi import HTTPException, status
+
 
 def check_header(headers):
     user = headers.get('X-Forwarded-For')
@@ -12,6 +13,7 @@ def check_header(headers):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail='X-Request-Id is required')
 
+
 async def post_request(url: str, body: dict, head: dict):
     check_header(head)
     async with aiohttp.ClientSession() as session:
@@ -22,7 +24,7 @@ async def post_request(url: str, body: dict, head: dict):
         return result
 
 
-async def get_request(url: str, head, params = None):
+async def get_request(url: str, head, params=None):
     check_header(head)
     async with aiohttp.ClientSession() as session:
         if params:

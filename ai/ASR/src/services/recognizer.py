@@ -1,11 +1,13 @@
 from functools import lru_cache
-import sherpa_onnx
+
 import core
+import sherpa_onnx
 
 
 @lru_cache
 def get_settings():
     return core.SettingsModelV2()
+
 
 settings = get_settings()
 

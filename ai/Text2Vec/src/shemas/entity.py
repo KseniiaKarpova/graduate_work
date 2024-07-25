@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field, field_validator
-import uuid
+from pydantic import BaseModel, Field
+
 
 class EntityModel(BaseModel):
     collection_name: str = Field(description='Название коллекции')

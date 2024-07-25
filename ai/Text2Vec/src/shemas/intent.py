@@ -1,5 +1,7 @@
-from pydantic import BaseModel, Field, field_validator
 from typing import List
+
+from pydantic import BaseModel, Field
+
 
 class IntentModel(BaseModel):
     name: str = Field(description='Name of Intent')

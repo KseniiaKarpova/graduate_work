@@ -1,10 +1,12 @@
-from . import BaseService
-from abc import  abstractmethod
+from abc import abstractmethod
+from uuid import UUID
+
+from models.history import ChatHistory
+from schemas.auth import JWTUserData
 from schemas.chat_history import ChatHistoryDTo
 from storages.chat_history import ChatHistoryStorage
-from models.history import ChatHistory
-from uuid import UUID
-from schemas.auth import JWTUserData
+
+from . import BaseService
 
 
 class BaseChatHistoryService(BaseService):
@@ -16,10 +18,11 @@ class BaseChatHistoryService(BaseService):
     @abstractmethod
     async def save_message(self):
         pass
-    
+
     @abstractmethod
     async def remove_message(self):
         pass
+
 
 class ChatHistoryService(BaseChatHistoryService):
     def __init__(self, storage: ChatHistoryStorage) -> None:
@@ -32,10 +35,9 @@ class ChatHistoryService(BaseChatHistoryService):
 
     async def remove_message(self, id: UUID):
         return await self.storage.delete(id=id)
-    
+
     async def get_messages(self, user_id: UUID, params):
         return await self.storage.get_many(user_id=user_id, params=params)
-
 
 
 def get_service():

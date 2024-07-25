@@ -12,6 +12,7 @@ from states.state import State
 
 STATE_KEY = 'last_{index}_updated'
 
+
 def repository_index():
     return [
         {
@@ -33,7 +34,7 @@ def repository_index():
 @create_session
 @backoff(start_sleep_time=0.1, factor=2, border_sleep_time=100)
 def fetch_changed_objects(next_node: Generator, session) -> Generator[None, datetime, None]:
-    ''' 
+    '''
     checks if there any updated movies
     '''
     while data := (yield):
@@ -46,7 +47,7 @@ def fetch_changed_objects(next_node: Generator, session) -> Generator[None, date
                 query = repository.last_updateds(limit=records_per_page, offset=offset, updated_at=last_modified)
                 result = session.execute(query)
                 objects = result.mappings().all()
-                ## break the loop if there is no data
+                # break the loop if there is no data
                 if not result or not objects:
                     break
                 data['objects'] = objects
@@ -60,7 +61,7 @@ def fetch_changed_objects(next_node: Generator, session) -> Generator[None, date
 def save_data(next_node: Generator) -> Generator[None, list, None]:
     '''
     saves the updated objects to ES
-    
+
     '''
     while data := (yield):
         objects = data['objects']

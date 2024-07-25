@@ -21,10 +21,12 @@ wrong_data = HTTPException(
     status_code=status.HTTP_406_NOT_ACCEPTABLE,
     detail="wrong data")
 
+
 def return_bad_request(massage: str) -> HTTPException:
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=massage)
+
 
 def return_fail(massage: str) -> HTTPException:
     raise HTTPException(

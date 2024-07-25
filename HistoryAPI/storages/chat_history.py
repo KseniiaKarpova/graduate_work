@@ -1,11 +1,11 @@
-from models.history import ChatHistory, Document
-from storages import BaseStorage
 from uuid import UUID
-from exceptions import already_exists, deleted
-from pymongo.errors import DuplicateKeyError
+
 import pymongo
-from schemas.chat_history import ChatHistoryDTo
+from exceptions import already_exists, deleted
 from fastapi_pagination.ext.beanie import paginate
+from models.history import ChatHistory, Document
+from pymongo.errors import DuplicateKeyError
+from storages import BaseStorage
 
 
 class ChatHistoryStorage(BaseStorage):

@@ -1,9 +1,8 @@
 import logging
 
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
-
 from middleware.request_log import RequestLogMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 logger = logging.getLogger(__name__)
 

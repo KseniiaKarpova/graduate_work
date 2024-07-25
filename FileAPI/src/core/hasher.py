@@ -1,7 +1,8 @@
-from core.config import settings
-from passlib import hash
-from faker import Faker
 import random as rd
+
+from core.config import settings
+from faker import Faker
+from passlib import hash
 
 fake = Faker()
 

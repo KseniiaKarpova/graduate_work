@@ -1,7 +1,8 @@
 from uuid import UUID
+
 from beanie import Document
-from pydantic import Field, BaseModel
 from models import BaseMixin
+from pydantic import BaseModel, Field
 
 
 class ChatHistory(BaseMixin, Document):

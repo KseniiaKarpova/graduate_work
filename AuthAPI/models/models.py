@@ -1,15 +1,13 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import (JSON, Enum, ForeignKey, MetaData, String, Text,
-                        UniqueConstraint, types, Boolean)
+from models.choices import SocialNetworksEnum
+from sqlalchemy import (JSON, Boolean, Enum, ForeignKey, MetaData, String,
+                        Text, UniqueConstraint, types)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import (DeclarativeBase, Mapped, backref, mapped_column,
                             relationship)
-
-from models.choices import SocialNetworksEnum
-
 
 metadata = MetaData()
 

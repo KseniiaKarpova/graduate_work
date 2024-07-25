@@ -1,8 +1,7 @@
+from core.logger import logger
 from fastapi import Request, Response
 from starlette.background import BackgroundTask
 from starlette.middleware.base import BaseHTTPMiddleware
-
-from core.logger import logger
 
 
 def write_log_data(request: Request, response: Response):

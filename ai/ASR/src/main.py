@@ -1,7 +1,8 @@
-from api.v1 import bot
-from fastapi.responses import ORJSONResponse
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from api.v1 import bot
+from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 
 
 @asynccontextmanager

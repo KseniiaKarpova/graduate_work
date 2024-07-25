@@ -1,16 +1,16 @@
-from fastapi import APIRouter, status, Depends, Body
-from core.handlers import require_access_token, JwtHandler
-from services.chat_history import ChatHistoryService, get_service
+from uuid import UUID
+
+from core.handlers import JwtHandler, require_access_token
+from fastapi import APIRouter, Body, Depends, status
+from fastapi_pagination import Params
 from models.history import ChatHistory
 from schemas.chat_history import ChatHistoryDTo, ChatHistoryList
-from uuid import UUID
-from fastapi_pagination import Params
-
+from services.chat_history import ChatHistoryService, get_service
 
 router = APIRouter(prefix="/chat-history")
 
 
-@router.get("",  status_code=status.HTTP_200_OK)
+@router.get("", status_code=status.HTTP_200_OK)
 async def read(
     user_id: UUID | None = None,
     jwt_handler: JwtHandler = Depends(require_access_token),
@@ -23,7 +23,7 @@ async def read(
     return await service.get_messages(user_id=user_id, params=params)
 
 
-@router.post("",  status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create(
     jwt_handler: JwtHandler = Depends(require_access_token),
     service: ChatHistoryService = Depends(get_service),

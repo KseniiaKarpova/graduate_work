@@ -14,4 +14,3 @@ class BaseModelManager(ABC):
     @abstractmethod
     def text_to_voice(self, text: str):
         pass
-

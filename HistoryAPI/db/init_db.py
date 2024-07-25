@@ -1,8 +1,7 @@
 from beanie import init_beanie
-from motor.motor_asyncio import AsyncIOMotorClient
-
 from core.config import settings
 from models.history import ChatHistory
+from motor.motor_asyncio import AsyncIOMotorClient
 
 
 async def init(*, client: AsyncIOMotorClient) -> None:

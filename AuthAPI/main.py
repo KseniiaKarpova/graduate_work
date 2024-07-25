@@ -1,29 +1,22 @@
 import logging
-import uvicorn
+from contextlib import asynccontextmanager
 
+import uvicorn
+from api import setup_routers
+from async_fastapi_jwt_auth.exceptions import AuthJWTException
+from authlib.integrations.httpx_client import AsyncOAuth2Client
+from core import config, logger, oauth2
+from db import postgres, redis
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse, ORJSONResponse
 from fastapi_pagination import add_pagination
-
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
-
-from utils.constraint import RequestLimit
-from utils.jaeger import configure_tracer
-
-from core import config, logger, oauth2
-from api import setup_routers
-from db import postgres, redis
-
-from contextlib import asynccontextmanager
-
-from async_fastapi_jwt_auth.exceptions import AuthJWTException
-from authlib.integrations.httpx_client import AsyncOAuth2Client
-
 from middleware.main import setup_middleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from redis.asyncio import Redis
-
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from utils.constraint import RequestLimit
+from utils.jaeger import configure_tracer
 
 settings = config.APPSettings()
 

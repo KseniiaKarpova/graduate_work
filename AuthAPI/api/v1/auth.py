@@ -1,4 +1,5 @@
-from core.handlers import AuthHandler, JwtHandler, get_auth_handler, require_refresh_token
+from core.handlers import (AuthHandler, JwtHandler, get_auth_handler,
+                           require_refresh_token)
 from db.redis import get_redis
 from fastapi import APIRouter, Body, Depends, Header
 from redis.asyncio import Redis

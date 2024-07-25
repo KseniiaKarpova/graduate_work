@@ -6,11 +6,10 @@ from core import config
 from core.hasher import DataHasher
 from db import postgres
 from sqlalchemy import QueuePool
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from storages.user import UserStorage
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.exc import IntegrityError
-
 
 settings = config.APPSettings()
 logging.getLogger('asyncio').setLevel(logging.WARNING)

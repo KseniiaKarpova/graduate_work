@@ -42,21 +42,21 @@ class PersonRepository(BaseRepository):
             .alias()
         )
         return select(
-                Person.id,
-                Person.full_name.label('name'),
-                Person.modified,
-                func.jsonb_agg(
-                    func.jsonb_build_object('id', subquery.c.film_id, 'roles', subquery.c.roles)
-                ).label('films')
-            ).outerjoin(Person, Person.id == subquery.c.id).where(
-                Person.modified>updated_at
-                ).group_by(Person.id, subquery.c.id).order_by(Person.modified).limit(limit).offset(offset)
+            Person.id,
+            Person.full_name.label('name'),
+            Person.modified,
+            func.jsonb_agg(
+                func.jsonb_build_object('id', subquery.c.film_id, 'roles', subquery.c.roles)
+            ).label('films')
+        ).outerjoin(Person, Person.id == subquery.c.id).where(
+            Person.modified > updated_at
+        ).group_by(Person.id, subquery.c.id).order_by(Person.modified).limit(limit).offset(offset)
 
     @staticmethod
     def film_persons_name_subquery(role, label):
         subquery = (
             select(FilmWork.id, func.array_agg(Person.full_name).label(label)).where(
-                PersonFilmWork.role==role
+                PersonFilmWork.role == role
             )
             .join(PersonFilmWork, FilmWork.id == PersonFilmWork.film_work_id)
             .join(Person, Person.id == PersonFilmWork.person_id)
@@ -69,13 +69,13 @@ class PersonRepository(BaseRepository):
     @staticmethod
     def film_persons_subquery(role, label):
         subquery = (
-            select(FilmWork.id, 
+            select(FilmWork.id,
                    func.array_agg(
                        func.json_build_object(
                            'id', Person.id,
                            'name', Person.full_name,
-                   )).label(label)).where(
-                PersonFilmWork.role==role
+                       )).label(label)).where(
+                PersonFilmWork.role == role
             )
             .join(PersonFilmWork, FilmWork.id == PersonFilmWork.film_work_id)
             .join(Person, Person.id == PersonFilmWork.person_id)
@@ -86,10 +86,9 @@ class PersonRepository(BaseRepository):
         return subquery
 
 
-
 class FilmWorkRepository(BaseRepository):
     table = FilmWork
-    
+
     @staticmethod
     def all():
         query = select(func.count(FilmWork.id))
@@ -144,17 +143,17 @@ class FilmWorkRepository(BaseRepository):
                 (writers_names_subquery.c.writers_names.isnot(None), writers_names_subquery.c.writers_names),
                 (True, [])  # Default case for an empty list
             ).label('writers_names'),
-            ).outerjoin(
-                genre_subquery, FilmWork.id == genre_subquery.c.id,
-                ).outerjoin(
-                    actors_names_subquery, FilmWork.id == actors_names_subquery.c.id).outerjoin(
-                        actors_subquery, FilmWork.id == actors_subquery.c.id).outerjoin(
-                            director_subquery, FilmWork.id == director_subquery.c.id).outerjoin(
-                                writers_subquery, FilmWork.id == writers_subquery.c.id).outerjoin(
-                                    writers_names_subquery, FilmWork.id == writers_names_subquery.c.id
-                            ).where(
-                                FilmWork.modified>updated_at
-                                ).order_by(FilmWork.modified).limit(limit).offset(offset)
+        ).outerjoin(
+            genre_subquery, FilmWork.id == genre_subquery.c.id,
+        ).outerjoin(
+            actors_names_subquery, FilmWork.id == actors_names_subquery.c.id).outerjoin(
+            actors_subquery, FilmWork.id == actors_subquery.c.id).outerjoin(
+            director_subquery, FilmWork.id == director_subquery.c.id).outerjoin(
+            writers_subquery, FilmWork.id == writers_subquery.c.id).outerjoin(
+            writers_names_subquery, FilmWork.id == writers_names_subquery.c.id
+        ).where(
+            FilmWork.modified > updated_at
+        ).order_by(FilmWork.modified).limit(limit).offset(offset)
         return query
 
 
@@ -164,10 +163,10 @@ class GenreRepository(BaseRepository):
     @staticmethod
     def last_updateds(limit, offset, updated_at):
         return select(
-                Genre.id,
-                Genre.name,
-                Genre.description,
-                Genre.modified,
-            ).where(
-                Genre.modified>updated_at
-                ).order_by(Genre.modified).limit(limit).offset(offset)
+            Genre.id,
+            Genre.name,
+            Genre.description,
+            Genre.modified,
+        ).where(
+            Genre.modified > updated_at
+        ).order_by(Genre.modified).limit(limit).offset(offset)

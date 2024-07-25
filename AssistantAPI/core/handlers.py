@@ -4,12 +4,11 @@ from typing import Optional
 
 from core.config import settings
 from db.redis import get_redis
-from exceptions import forbidden_error, wrong_data
+from exceptions import forbidden_error, token_expired, unauthorized, wrong_data
 from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import jwt, ExpiredSignatureError
+from jose import ExpiredSignatureError, jwt
 from schemas.auth import JWTUserData
-from exceptions import unauthorized, token_expired
 
 
 def decode_token(token: str) -> Optional[dict]:
@@ -89,7 +88,7 @@ class JwtHandler:
 
 
 def require_access_token(
-    jwt_data = Depends(JWTBearer(token_type='access'))
+    jwt_data=Depends(JWTBearer(token_type='access'))
 ) -> JwtHandler:
     data, token = jwt_data
     return JwtHandler(jwt_data=data), token

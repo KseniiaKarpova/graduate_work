@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Field, field_validator
-from typing import List
+from pydantic import BaseModel, Field
+
 
 class AnswerModel(BaseModel):
     query: str = Field(description='Текст запроса')
     text: str = Field(description='Текст ответа')
     intent: str | None = Field(None, description='intent')
-    entity: str | None  = Field(None, description='entity')
+    entity: str | None = Field(None, description='entity')
     metadata: dict | None = Field(None, description='More info')
 
 

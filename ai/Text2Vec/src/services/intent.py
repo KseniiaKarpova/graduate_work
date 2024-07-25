@@ -1,12 +1,12 @@
 from functools import lru_cache
-from fastapi import Depends
-from db import BaseVecDB
+from typing import List
+
 from db.qdrant import QdrantDB
+from fastapi import Depends
 from shemas import ResponseDB
 from shemas.intent import IntentModel
 from storages.intent import IntentStorage
-from storages import BaseStorage
-from typing import List
+
 
 class IntentService:
     def __init__(self, storage):

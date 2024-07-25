@@ -1,6 +1,7 @@
-from pydantic import Field, BaseModel
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
+
+from pydantic import BaseModel, Field
 
 
 class BaseMixin(BaseModel):
