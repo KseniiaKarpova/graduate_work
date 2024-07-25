@@ -1,15 +1,15 @@
 from uuid import UUID
 from pydantic import BaseModel, Field
-from models.history import ChatHistory, MetaData
+from models.history import ChatHistory
 
 
 class ChatHistoryDTo(BaseModel):
     user_id: UUID | None = Field(None)
+    query: str | None = Field(None)
     text: str | None = Field(None)
-    direction: str
-    intent: str
+    intent: str | None = Field(None)
     entity: str | None = Field(None)
-    metadata: MetaData | None = Field(None)
+    metadata: dict | None = Field(None)
 
 
 
