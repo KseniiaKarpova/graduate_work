@@ -1,13 +1,16 @@
 from uuid import UUID
 from pydantic import BaseModel, Field
-from models.history import ChatHistory
+from models.history import ChatHistory, MetaData
 
 
 class ChatHistoryDTo(BaseModel):
     user_id: UUID | None = Field(None)
     text: str | None = Field(None)
-    file_id: str
     direction: str
+    intent: str
+    entity: str | None = Field(None)
+    metadata: MetaData | None = Field(None)
+
 
 
 class ChatHistoryList(BaseModel):

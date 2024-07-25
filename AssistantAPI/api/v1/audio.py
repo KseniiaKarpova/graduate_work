@@ -6,8 +6,5 @@ router = APIRouter(prefix="/audio")
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def send_audio(
-    credentials=Depends(require_access_token),
     service: AudioService = Depends(get_service)):
-    jwt_handler, token = credentials
-    await jwt_handler.get_current_user()
-    return await service.save_file(token=token)
+    return await service.proceed()

@@ -77,7 +77,7 @@ class INTENT_API(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}/api/v1/ask/"
+        return f"http://{self.host}:{self.port}/api/v1/ask"
 
 
 class TTS_API(BaseSettings):
@@ -87,7 +87,7 @@ class TTS_API(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}/api/v1/text2speach/"
+        return f"http://{self.host}:{self.port}/api/v1/text2speach"
 
 
 class APPSettings(BaseSettings):

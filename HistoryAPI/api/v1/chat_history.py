@@ -16,7 +16,7 @@ async def read(
     jwt_handler: JwtHandler = Depends(require_access_token),
     service: ChatHistoryService = Depends(get_service),
     params: Params = Depends()
-) -> ChatHistoryList:
+):
     user = await jwt_handler.get_current_user()
     if not user_id:
         user_id = user.uuid
@@ -27,7 +27,7 @@ async def read(
 async def create(
     jwt_handler: JwtHandler = Depends(require_access_token),
     service: ChatHistoryService = Depends(get_service),
-    dto: ChatHistoryDTo = Body(),
-) -> ChatHistory:
+    dto: ChatHistory = Body(),
+):
     user = await jwt_handler.get_current_user()
     return await service.save_message(dto=dto, user=user)

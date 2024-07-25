@@ -1,12 +1,15 @@
 from aiohttp import ClientSession, ClientResponse, FormData, ClientConnectionError
-from fastapi import HTTPException, status
+from typing import Generator
+from fastapi import HTTPException
 
 
 # Dependency to provide an aiohttp session
 async def get_http_client():
-    converter = DataConverter()
-    async with HttpClient(converter) as client:
+    async with ClientSession() as session:
+        converter = DataConverter()
+        client = HttpClient(converter, session=session)
         yield client
+
 
 class DataConverter:
     @staticmethod
@@ -22,30 +25,27 @@ class DataConverter:
 
 
 class HttpClient:
-    def __init__(self, converter: DataConverter) -> None:
-        self._session: ClientSession = None
+    def __init__(self, converter: DataConverter, session: ClientSession) -> None:
+        self._session: ClientSession = session or ClientSession()
         self._converter = converter
-
-    async def __aenter__(self) -> 'HttpClient':
-        self._session = ClientSession()
-        return self
-
-    async def __aexit__(self, exc_type, exc, tb) -> None:
-        await self._session.close()
 
     async def post(self, url: str, headers: dict = None, data: dict = None, data_type: str = 'json') -> ClientResponse:
         if data_type == 'json':
             data = self._converter.to_json(data)
         async with self._session.post(url, headers=headers, data=data if data_type == 'form' else None, json=data if data_type == 'json' else None) as response:
-            response_data = await response.json()
-            if response.status != 200:
-                raise HTTPException(status_code=response.status, detail=response_data.get('detail', 'Unknown error'))
-            return response_data
+            return await self._handle_response(response)
 
-
-    async def get(self, url: str, headers: dict = None, params: dict = None):
+    async def get(self, url: str, headers: dict = None, params: dict = None, to_json: bool = True):
         async with self._session.get(url, headers=headers, params=params) as response:
-            response_data = await response.json()
-            if response.status != 200:
-                raise HTTPException(status_code=response.status, detail=response_data.get('detail', 'Unknown error'))
-            return response_data
+            if not to_json:
+                return response
+            return await self._handle_response(response)
+
+    async def _handle_response(self, response: ClientResponse):
+        if response.status != 200:
+            try:
+                response_data = await response.json()
+            except Exception:
+                response_data = {"detail": "Unknown error"}
+            raise HTTPException(status_code=response.status, detail=response_data.get('detail', 'Unknown error'))
+        return await response.json() if response.content_type == 'application/json' else await response.text()

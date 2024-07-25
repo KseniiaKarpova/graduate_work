@@ -1,8 +1,10 @@
 from core.config import settings
-from aiohttp import ClientSession, FormData
+from aiohttp import ClientSession, FormData, ClientResponse
 from utils.request import get_http_client, HttpClient
 from fastapi import Depends, UploadFile
+from fastapi.responses import FileResponse
 from core.handlers import require_access_token
+from uuid import uuid4
 
 
 class AudioService:
@@ -12,8 +14,10 @@ class AudioService:
         self.token = token
 
     async def proceed(self):
-        audio_text = await self.speach_to_text()
+        #audio_text = await self.speach_to_text()
+        audio_text = 'whyyyyy'
         intent_text = await self.get_intents(text=audio_text)
+        print(intent_text)
         return await self.text_to_speach(text=intent_text)
 
     async def speach_to_text(self):
@@ -29,8 +33,7 @@ class AudioService:
 
     async def text_to_speach(self, text: str):
         headers = await self.headers()
-        response_data = await self.session.get(f"{settings.tts_api.path}/{text}", headers=headers)
-        return response_data
+        return await self.session.get(f"{settings.tts_api.path}/{text}", headers=headers, to_json=False)
 
     async def save_file(self):
         form = await self.form()
@@ -44,7 +47,8 @@ class AudioService:
     async def headers(self):
         return {
             "Content-Disposition": f'attachment; filename="{self.audio.filename}";',
-            "Authorization": f"Bearer {self.token}"
+            "Authorization": f"Bearer {self.token}",
+            "X-Request-Id": str(uuid4())
         }
 
 

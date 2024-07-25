@@ -10,14 +10,9 @@ from fastapi_pagination.ext.beanie import paginate
 class ChatHistoryStorage(BaseStorage):
     document: Document = ChatHistory
 
-    async def create(self, dto: ChatHistoryDTo):
+    async def create(self, dto: ChatHistory):
         try:
-            return await ChatHistory(
-                user_id=dto.user_id,
-                text=dto.text,
-                file_id=dto.file_id,
-                direction=dto.direction
-            ).create()
+            return await dto.create()
         except DuplicateKeyError:
             raise already_exists
 
