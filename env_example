@@ -191,3 +191,12 @@ cinema_port=7000
 redis_intent_HOST=redis_intent
 redis_intent_PORT=6379
 redis_intent_DB=0
+
+ASR_API_HOST=asr_api
+ASR_API_PORT=3003
+
+INTENT_API_HOST=intent_api
+INTENT_API_PORT=3303
+
+TTS_API_HOST=tts_api
+TTS_API_PORT=3004
