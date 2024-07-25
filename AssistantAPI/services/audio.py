@@ -31,7 +31,7 @@ class AudioService:
 
     async def text_to_speach(self, text: str):
         headers = await self.headers()
-        return await self.session.get(f"{settings.tts_api.path}/{text}", headers=headers, to_json=False)
+        return await self.session.get(f"{settings.tts_api.path}/{text}", headers=headers, to_json=True)
 
     async def save_file(self):
         form = await self.form()
