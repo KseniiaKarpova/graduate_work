@@ -16,6 +16,7 @@ async def ask(
     jwt_handler: JwtHandler = Depends(require_access_token),
 ) -> AnswerModel:
     user = await jwt_handler.get_current_user()
-    user_id = user.uuid
-    result = await get_facade().ask(text, request)
+    user_id = str(user.uuid)
+    result = await get_facade().ask(text, user_id, request)
+    await get_facade().log(result, user_id, request)
     return result

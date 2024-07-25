@@ -18,6 +18,11 @@ class ProxyStorage(AbstractStorage):
         await self.object_storage.save(file, bucket, path)
         return data
 
+    async def get_stream(self, bucket, short_name):
+        data = await self.path_storage.get(short_name)
+        result = await self.object_storage.get_stream(bucket=bucket, path=data[0], filename=data[1])
+        return result
+
     async def get(self, bucket, short_name):
         data = await self.path_storage.get(short_name)
         result = await self.object_storage.get(bucket=bucket, path=data[0], filename=data[1])

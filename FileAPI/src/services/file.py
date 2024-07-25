@@ -26,6 +26,15 @@ class FileService(AbstractService):
         return data
 
 
+
+    async def download_stream(self, short_name):
+        data = await self.stopage.get(bucket=bucket_settings.bucket_movies,
+                                           short_name=short_name,)
+        return data
+
+
+
+
 def get_file_service(
     minio: AbstractStorage = Depends(MinioStorage),
     pg: AbstractStorage = Depends(PostgresStorage),

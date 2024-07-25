@@ -3,6 +3,7 @@ from storages import BaseStorage
 from uuid import UUID
 from exceptions import already_exists, deleted
 from pymongo.errors import DuplicateKeyError
+import pymongo
 from schemas.chat_history import ChatHistoryDTo
 from fastapi_pagination.ext.beanie import paginate
 
@@ -21,4 +22,4 @@ class ChatHistoryStorage(BaseStorage):
         return deleted
 
     async def get_many(self, params, **kwargs):
-        return await paginate(ChatHistory.find_many(kwargs), params=params)
+        return await paginate(ChatHistory.find_many(kwargs).sort([("created_at", pymongo.DESCENDING)]), params=params)

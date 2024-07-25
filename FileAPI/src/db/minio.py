@@ -1,9 +1,9 @@
 from datetime import timedelta
-
+from aiofiles import tempfile
 from aiohttp import ClientSession
 from fastapi import UploadFile
 from miniopy_async import Minio
-from starlette.responses import StreamingResponse
+from starlette.responses import StreamingResponse, FileResponse
 
 from exceptions import file_not_found
 from db import AbstractStorage
@@ -27,7 +27,7 @@ class MinioStorage(AbstractStorage):
         )
 
 
-    async def get(self, bucket: str, path: str, filename: str = "movie.mp4") -> StreamingResponse:
+    async def get_stream(self, bucket: str, path: str, filename: str = "movie.mp4") -> StreamingResponse:
         try:
             session = ClientSession()
             result = await self.client.get_object(bucket, path, session)
@@ -39,6 +39,19 @@ class MinioStorage(AbstractStorage):
                 content=s3_stream(),
                 headers={'Content-Disposition': f'filename="{filename}"'},
             )
+        except Exception as e:
+            await session.close()
+            raise file_not_found from e
+
+
+    async def get(self, bucket: str, path: str, filename: str = "movie.mp4") -> StreamingResponse:
+        try:
+            session = ClientSession()
+            result = await self.client.get_object(bucket, path, session)
+            result_bytes = await result.content.read()
+            async with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=False) as temp_file:
+                await temp_file.write(result_bytes)
+                return FileResponse(temp_file.name, media_type='audio/wav', filename=filename)
         except Exception as e:
             await session.close()
             raise file_not_found from e

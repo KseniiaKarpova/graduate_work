@@ -17,12 +17,10 @@ services:
 
 
   elasticsearch:
-    image: elasticsearch:8.10.2
+    image: elasticsearch:7.16.1
     environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms265m -Xmx265m"
-      - xpack.security.enabled=false
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      discovery.type: single-node
     env_file:
       - .env
     volumes:
@@ -126,4 +124,3 @@ volumes:
   pg_data:
   es_data:
   cache:
-
