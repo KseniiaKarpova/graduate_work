@@ -17,7 +17,8 @@ docker-compose -f docker-compose.ai.yaml -f docker-compose.main.yaml -f docker-c
 ```
 
 ```bash
-docker exec AuthAPI alembic upgrade head 
+docker exec AuthAPI alembic upgrade head
+docker exec file_api alembic upgrade head
 
 ```
 ## Step 2 (migration)
