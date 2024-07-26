@@ -1,6 +1,5 @@
 from aiohttp import (ClientConnectionError, ClientResponse, ClientSession,
-                     FormD
-ata)
+                     FormData)
 from fastapi import HTTPException
 
 
