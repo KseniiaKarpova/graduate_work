@@ -57,6 +57,10 @@ class Settings(BaseSettings):
     auth: AuthSettings = AuthSettings()
     hasher: HasherSettings = HasherSettings()
 
+    @property
+    def postgres_path(self):
+        return f'{self.observer_type}://{self.observer_user}:{self.observer_password}@{self.observer_host}:{self.observer_port}/{self.observer_database}'
+
 
 bucket_settings = BucketSettings()
 settings = Settings()

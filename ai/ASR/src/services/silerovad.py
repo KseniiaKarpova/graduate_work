@@ -102,7 +102,6 @@ class Vad():
 
     def is_speech(self, audio, sample_rate):
         out = self.model(self._prepare_audio(audio), sample_rate)
-        # print (out[0][0])
         if out[0][0] > self.threshold:
             return True
         else:

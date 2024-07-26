@@ -23,5 +23,4 @@ def insert_to_entity(index: str, text: str, metadata: dict = {}):
         'text': text,
         'metadata': metadata,
     }
-    response = requests.post(URL, headers=headers, json=json_data)
-    print(response.text)
+    requests.post(URL, headers=headers, json=json_data)

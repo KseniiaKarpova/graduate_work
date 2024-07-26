@@ -18,7 +18,6 @@ class Index:
         for document in data:
             datum = cls.remove_not_mapped_fields(data=dict(document))
             client.index(index=index, body=datum, id=datum['id'])
-            print(datum, '----------saved----------')
 
             if cls.__index_name__ == 'movies':
                 val = {

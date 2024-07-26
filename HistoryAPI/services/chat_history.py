@@ -3,7 +3,6 @@ from uuid import UUID
 
 from models.history import ChatHistory
 from schemas.auth import JWTUserData
-from schemas.chat_history import ChatHistoryDTo
 from storages.chat_history import ChatHistoryStorage
 
 from . import BaseService

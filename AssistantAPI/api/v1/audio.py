@@ -1,6 +1,6 @@
-from core.handlers import require_access_token
-from fastapi import APIRouter, Depends, UploadFile, status
+from fastapi import APIRouter, Depends, status
 from services.audio import AudioService, get_service
+
 
 router = APIRouter(prefix="/audio")
 

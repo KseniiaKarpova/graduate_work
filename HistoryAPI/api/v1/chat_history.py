@@ -4,7 +4,6 @@ from core.handlers import JwtHandler, require_access_token
 from fastapi import APIRouter, Body, Depends, status
 from fastapi_pagination import Params
 from models.history import ChatHistory
-from schemas.chat_history import ChatHistoryDTo, ChatHistoryList
 from services.chat_history import ChatHistoryService, get_service
 
 router = APIRouter(prefix="/chat-history")

@@ -1,6 +1,6 @@
-from aiohttp import (ClientConnectionError, ClientResponse, ClientSession,
-                     FormData)
+from aiohttp import ClientResponse, ClientSession, ClientConnectionError
 from fastapi import HTTPException
+from exceptions import server_highload
 
 
 # Dependency to provide an aiohttp session
@@ -13,13 +13,6 @@ async def get_http_client():
 
 class DataConverter:
     @staticmethod
-    def to_form_data(data: dict) -> FormData:
-        form = FormData()
-        for key, value in data.items():
-            form.add_field(key, value)
-        return form
-
-    @staticmethod
     def to_json(data: dict) -> dict:
         return data
 
@@ -30,16 +23,23 @@ class HttpClient:
         self._converter = converter
 
     async def post(self, url: str, headers: dict = None, data: dict = None, data_type: str = 'json') -> ClientResponse:
+        json_data = None
         if data_type == 'json':
             data = self._converter.to_json(data)
-        async with self._session.post(url, headers=headers, data=data if data_type == 'form' else None, json=data if data_type == 'json' else None) as response:
-            return await self._handle_response(response)
+        try:
+            async with self._session.post(url, headers=headers, data=data, json=json_data) as response:
+                return await self._handle_response(response)
+        except ClientConnectionError:
+            raise server_highload
 
     async def get(self, url: str, headers: dict = None, params: dict = None, to_json: bool = True):
-        async with self._session.get(url, headers=headers, params=params) as response:
-            if not to_json:
-                return response
-            return await self._handle_response(response)
+        try:
+            async with self._session.get(url, headers=headers, params=params) as response:
+                if not to_json:
+                    return response
+                return await self._handle_response(response)
+        except ClientConnectionError:
+            raise server_highload
 
     async def _handle_response(self, response: ClientResponse):
         if response.status != 200:

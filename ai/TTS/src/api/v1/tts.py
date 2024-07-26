@@ -19,5 +19,4 @@ async def tts(
     audio = tts_service.text_to_voice(text)
     result = await tts_service.save_file(audio, request)
     background_tasks.add_task(os.remove, audio)
-    print(result)
     return result

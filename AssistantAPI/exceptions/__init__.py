@@ -27,3 +27,9 @@ already_exists = HTTPException(
 deleted = HTTPException(
     status_code=status.HTTP_200_OK,
     detail="the record deleted")
+
+file_error = HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                           detail="Sorry... but I cant read your file. Use wav file and sample_rate: 16000")
+big_file = HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="your file is BIG")
+
+server_highload = HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Sorry server is high loaded")

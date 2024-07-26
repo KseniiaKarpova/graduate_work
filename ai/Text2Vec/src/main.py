@@ -20,7 +20,6 @@ async def lifespan(app: FastAPI):
     translator.tokenizer = translator.init_tokenizer()
     translator.translation_pipeline = translator.init_translator()
     redis.redis = Redis(host=settings.redis.host, port=settings.redis.port)
-
     yield
     await redis.redis.close()
     await qdrant.client.close()
