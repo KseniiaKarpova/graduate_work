@@ -51,12 +51,3 @@ async def before_request(request: Request, call_next):
 
 
 app.include_router(bot.router, prefix='/api/v1', tags=['bot'])
-
-
-if __name__ == '__main__':
-    uvicorn.run(
-        app,
-        log_config=LOGGING,
-        log_level=logging.DEBUG,
-        reload=True,
-    )

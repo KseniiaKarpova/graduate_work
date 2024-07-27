@@ -9,7 +9,7 @@ class SettingsModelV1(BaseSettings):
     tokens: str = path + "lang/tokens.txt"
     num_threads: int = 4
     sample_rate: int = 8000
-    decoding_method: str = "greedy_search"
+    decoding_method: str = "modified_beam_search"
     hotwords: str = path + 'hot_words_ru_v1.txt'
 
 
@@ -21,5 +21,11 @@ class SettingsModelV2(BaseSettings):
     tokens: str = path + "lang/tokens.txt"
     num_threads: int = 4
     sample_rate: int = 8000
-    decoding_method: str = "greedy_search"
+    decoding_method: str = "modified_beam_search"
     hotwords: str = path + 'hot_words_ru_v2.txt'
+
+
+class Settings(BaseSettings):
+    basemodel = SettingsModelV2()
+
+settings = Settings()

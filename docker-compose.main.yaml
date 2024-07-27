@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
 
@@ -156,7 +156,7 @@ services:
       - ./Nginx/text2vec.conf:/etc/nginx/conf.d/text2vec.conf:ro
       - ./Nginx/intent_api.conf:/etc/nginx/conf.d/intent_api.conf:ro
       - ./Nginx/asr_api.conf:/etc/nginx/conf.d/asr_api.conf:ro
-
+      - ./Nginx/trans_data.conf:/etc/nginx/conf.d/trans_data.conf:ro
       - ./Nginx/assistant_api.conf:/etc/nginx/conf.d/assistant_api.conf:ro
       - ./Nginx/history_api.conf:/etc/nginx/conf.d/history_api.conf:ro
     depends_on:
@@ -167,6 +167,8 @@ services:
       assistant_api:
         condition: service_started
       history_api:
+        condition: service_started
+      data_transfer:
         condition: service_started
     ports:
       - "8001:8001"
@@ -179,6 +181,7 @@ services:
       - "8008:8008"
       - "8009:8009"
       - "8010:8010"
+      - "8877:8877"
     networks:
       - application_network
 

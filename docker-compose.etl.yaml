@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 
 services:
   postgres:
@@ -32,13 +32,11 @@ services:
       - application_network
 
 
-  data_transfer_sqlite_to_pg:
+  data_transfer:
     build:
       context: etl/data_transfer_sqlite_to_pg
       dockerfile: Dockerfile
     container_name: data_transfer
-    ports:
-      - "8877:8877"
     env_file:
       - .env
     networks:
@@ -49,8 +47,6 @@ services:
     image: redis:7.2.3-alpine3.18
     container_name: cache
     restart: always
-    ports:
-      - '6379:6379'
     env_file:
       - .env
     volumes:
@@ -73,8 +69,8 @@ services:
         condition: service_started
       elasticsearch:
         condition: service_started
-      #text2vec:
-      #  condition: service_started
+      text2vec:
+        condition: service_started
     environment:
       PYTHONPATH: /src
       DB_NAME: ${PG_NAME}

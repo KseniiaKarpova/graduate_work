@@ -18,10 +18,8 @@ class OnnxWrapper():
         self.sample_rates = [8000, 16000]
 
     def _validate_input(self, x, sr: int):
-        # if x.dim() == 1:
         if len(x.shape) == 1:
             x = x.unsqueeze(0)
-        # if x.dim() > 2:
         if len(x.shape) > 2:
             raise ValueError(f"Too many dimensions for input audio chunk {x.dim()}")
 
@@ -66,7 +64,6 @@ class OnnxWrapper():
         self._last_sr = sr
         self._last_batch_size = batch_size
 
-        # out = torch.tensor(out)
         return out
 
     def audio_forward(self, x, sr: int, num_samples: int = 512):
@@ -87,7 +84,7 @@ class OnnxWrapper():
         return stacked.cpu()
 
 
-class Vad():
+class Vad:
 
     @lru_cache()
     def __init__(self, threshold):
@@ -102,10 +99,7 @@ class Vad():
 
     def is_speech(self, audio, sample_rate):
         out = self.model(self._prepare_audio(audio), sample_rate)
-        if out[0][0] > self.threshold:
-            return True
-        else:
-            return False
+        return out[0][0] > self.threshold
 
     def reset(self):
         self.model.reset_states()
