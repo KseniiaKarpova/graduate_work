@@ -209,6 +209,9 @@ asr_core_max_size=300500
 asr_core_valid_content_type=['audio/wav', 'audio/x-wav']
 asr_core_valid_sample_rate=[8000, 16000]
 asr_core_recommended_sample_rate=8000
-asr_core_num_samples=512
-asr_core_size_chunk=256
 asr_core_max_val=32768
+
+asr_vad_aggressiveness_mode=2
+asr_vad_split_size=144000
+asr_vad_num_samples=512
+asr_vad_size_chunk=256
