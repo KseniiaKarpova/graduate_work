@@ -31,5 +31,5 @@ opentelemetry-sdk==1.17.0
 opentelemetry-instrumentation-fastapi==0.38b0
 opentelemetry-exporter-jaeger==1.17.0
 python-jose==3.3.0
-python-multipart
-pyyaml
+python-multipart==0.0.9
+pyyaml==6.0.1

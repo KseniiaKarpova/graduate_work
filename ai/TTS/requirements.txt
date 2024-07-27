@@ -17,6 +17,6 @@ python-multipart==0.0.6
 orjson==3.9.10
 TTS==0.22.0
 trl==0.9.4
-torch
-soundfile
-vosk-tts
+torch==2.3.1
+soundfile==0.12.1
+vosk-tts==0.3.56

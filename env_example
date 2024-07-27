@@ -205,3 +205,10 @@ history_host=history_api
 history_port=3001
 history_uri=api/v1/chat-history
 
+asr_core_max_size=300500
+asr_core_valid_content_type=['audio/wav', 'audio/x-wav']
+asr_core_valid_sample_rate=[8000, 16000]
+asr_core_recommended_sample_rate=8000
+asr_core_num_samples=512
+asr_core_size_chunk=256
+asr_core_max_val=32768

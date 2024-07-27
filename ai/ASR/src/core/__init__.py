@@ -1,5 +1,5 @@
-from pydantic_settings import BaseSettings
-
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List
 
 class SettingsModelV1(BaseSettings):
     path: str = 'models/v1/'
@@ -25,7 +25,18 @@ class SettingsModelV2(BaseSettings):
     hotwords: str = path + 'hot_words_ru_v2.txt'
 
 
+class AsrCoreSettings(BaseSettings):
+    max_size: int = ...
+    valid_content_type: List[str] = ...
+    valid_sample_rate: List[int] = ...
+    recommended_sample_rate: int = ...
+    max_val: int = ...
+    num_samples: int = ...
+    size_chunk: int = ...
+    model_config: str = SettingsConfigDict(env_prefix='asr_core_')
+
 class Settings(BaseSettings):
     basemodel = SettingsModelV2()
+    core : AsrCoreSettings = AsrCoreSettings()
 
 settings = Settings()

@@ -1,5 +1,6 @@
 from functools import lru_cache
 import torch
+from core import settings
 
 
 class OnnxWrapper():
@@ -15,7 +16,7 @@ class OnnxWrapper():
         self.session.inter_op_num_threads = 1
 
         self.reset_states()
-        self.sample_rates = [8000, 16000]
+        self.sample_rates = settings.core.valid_sample_rate
 
     def _validate_input(self, x, sr: int):
         if len(x.shape) == 1:
@@ -54,7 +55,7 @@ class OnnxWrapper():
         if (self._last_batch_size) and (self._last_batch_size != batch_size):
             self.reset_states(batch_size)
 
-        if sr in [8000, 16000]:
+        if sr in self.sample_rates:
             ort_inputs = {'input': x, 'h': self._h, 'c': self._c, 'sr': np.array(sr).astype('int64')}
             ort_outs = self.session.run(None, ort_inputs)
             out, self._h, self._c = ort_outs
@@ -66,7 +67,7 @@ class OnnxWrapper():
 
         return out
 
-    def audio_forward(self, x, sr: int, num_samples: int = 512):
+    def audio_forward(self, x, sr: int, num_samples: int = settings.core.num_samples):
         outs = []
         x, sr = self._validate_input(x, sr)
 
@@ -93,9 +94,9 @@ class Vad:
 
     def _prepare_audio(self, audio):
         audio1 = np.frombuffer(audio, dtype=np.int16)
-        audio1 = audio1.astype(np.float32) / 32768
-        chunk = np.concatenate((audio1, np.zeros((256))))
-        return chunk[:256].reshape((1, 256)).astype(np.float32)
+        audio1 = audio1.astype(np.float32) / settings.core.max_val
+        chunk = np.concatenate((audio1, np.zeros((settings.core.size_chunk))))
+        return chunk[:settings.core.size_chunk].reshape((1, settings.core.size_chunk)).astype(np.float32)
 
     def is_speech(self, audio, sample_rate):
         out = self.model(self._prepare_audio(audio), sample_rate)

@@ -5,19 +5,12 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-
-    yield
-
-
 app = FastAPI(
     title="ASR",
     description="",
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',
-    default_response_class=ORJSONResponse,
-    lifespan=lifespan
+    default_response_class=ORJSONResponse
 )
 
 app.include_router(bot.router, prefix='/api/v1/audio', tags=['audio'])

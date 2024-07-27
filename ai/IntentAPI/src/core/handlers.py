@@ -5,7 +5,7 @@ from typing import Optional
 
 from core.config import settings
 from db.redis import get_redis
-from exceptions import forbidden_error, wrong_data, token_expired
+from exceptions import Error_forbidden_error, Error_wrong_data, Error_token_expired
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, jwt
@@ -18,12 +18,12 @@ def decode_token(token: str) -> Optional[dict]:
             token, settings.auth.secret_key, algorithms=[
                 settings.auth.jwt_algorithm])
         if decoded_token['exp'] < time.time():
-            raise forbidden_error
+            raise Error_forbidden_error
         return decoded_token
     except ExpiredSignatureError:
-        raise token_expired
+        raise Error_token_expired
     except Exception:
-        raise wrong_data
+        raise Error_wrong_data
 
 
 async def jwt_user_data(subject: dict):
@@ -62,7 +62,7 @@ class JWTBearer(HTTPBearer):
         redis = get_redis()
         denied = await redis.get(jti)
         if denied:
-            raise forbidden_error
+            raise Error_forbidden_error
 
     async def check_credentials(self, credentials: HTTPAuthorizationCredentials):
         if not credentials:

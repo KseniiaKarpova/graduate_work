@@ -3,7 +3,8 @@ from typing import List
 
 import numpy as np
 from core.logger import logger
-from exceptions import big_file, file_error
+from core import settings
+from exceptions import Error_big_file, Error_file_error
 from fastapi import Depends, UploadFile
 from services import MainDetector
 
@@ -11,19 +12,20 @@ from services import MainDetector
 class Detector(MainDetector):
 
     async def file_to_frame(self, upload_file: UploadFile):
-        if upload_file.size > 300500:
-            raise big_file
+        if upload_file.size > settings.core.max_size:
+            raise Error_big_file
 
-        if upload_file.content_type != 'audio/wav' and upload_file.content_type != 'audio/x-wav':
-            raise file_error
+        if not (upload_file.content_type in settings.core.asr_core_valid_content_type):
+            raise Error_file_error
         try:
             audio_bytes = await upload_file.read()
             samples = np.frombuffer(audio_bytes, dtype=np.int16)
-            samples = samples.astype(np.float32) / 32768
+            return samples.astype(np.float32) / settings.core.max_val
 
-            return samples
+        except ValueError:
+            raise Error_file_error
         except Exception:
-            raise file_error
+            raise Error_file_error
 
 
 class Service:
@@ -42,12 +44,12 @@ class Service:
         result = ''
         for start, stop in self.detector.vad_detect_2(samples):
             try:
-                text = self.detector.transcribe(samples[start: stop], 8000).strip()
+                text = self.detector.transcribe(samples[start: stop], settings.core.recommended_sample_rate).strip()
                 logger.info(text)
                 if len(text) > 2:
                     result = result + " " + text
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error("Can`t transcribe sample. " + str(e))
 
         return {'text': result.strip()}
 

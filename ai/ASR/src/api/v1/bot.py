@@ -1,4 +1,4 @@
-from exceptions import server_error
+from exceptions import Error_server_error
 from fastapi import APIRouter, Depends, UploadFile
 from services.detector import Service, detector_service
 
@@ -17,5 +17,5 @@ async def transcript_long(
 ):
     res = await detector_service.get_text_long(file=audio)
     if not res:
-        raise server_error
+        raise Error_server_error
     return res
