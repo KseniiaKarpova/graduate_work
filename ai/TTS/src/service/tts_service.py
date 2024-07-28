@@ -23,7 +23,7 @@ class TTSServices:
             return {'short_name': response_data.get("short_name")}
         except Exception:
             os.remove(path_file)
-            raise exceptions.try_retry_after
+            raise exceptions.TryRetryAfterError
 
 
 @lru_cache()

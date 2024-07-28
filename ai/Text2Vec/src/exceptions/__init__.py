@@ -1,30 +1,38 @@
 from fastapi import HTTPException, status
 
-unauthorized = HTTPException(
+UnauthorizedError = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Bad username or password")
 
-created = HTTPException(
+ServerError = HTTPException(
+    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    detail="Sorry...")
+
+ForbiddenError = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="You have been denied access")
+
+Created = HTTPException(
     status_code=status.HTTP_201_CREATED,
     detail="Data has been created")
 
-incorrect_credentials = HTTPException(
+IncorrectCredentialsError = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="incorrect login or password")
 
-ok = HTTPException(
+Ok = HTTPException(
     status_code=status.HTTP_200_OK,
     detail="User has been updated")
 
-not_found = HTTPException(
+NotFoundError = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="Not found")
 
-try_retry_after = HTTPException(
+TryRetryError= HTTPException(
     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     detail="Извините, сервер временно недоступен, попробуйте попозже.")
 
-empty = HTTPException(
+EmptyError = HTTPException(
     status_code=status.HTTP_204_NO_CONTENT,
     detail="Not found")
 

@@ -2,7 +2,7 @@ from typing import List
 
 from core.config import settings
 from db import BaseVecDB
-from exceptions import empty, return_bad_request, try_retry_after
+from exceptions import EmptyError, return_bad_request, TryRetryError
 from qdrant_client import AsyncQdrantClient
 from shemas import ResponseDB
 
@@ -36,7 +36,7 @@ class QdrantDB(BaseVecDB):
             raise return_bad_request(
                 f"I do not know anything about {collection_name} or Id is not a valid UUID. Check the correctness of the data being uploaded")
         except Exception:
-            raise try_retry_after
+            raise TryRetryError
 
     async def search(self, collection_name: str, query_text: str) -> ResponseDB:
         data = await self.search_many(collection_name, query_text, limit=1)
@@ -57,12 +57,12 @@ class QdrantDB(BaseVecDB):
             raise return_bad_request(
                 f"I do not know anything about {collection_name}. Check the correctness of the data being uploaded")
         except Exception:
-            raise try_retry_after
+            raise TryRetryError
 
         ans = [ResponseDB(id=item.id,
                           score=item.score,
                           metadata=item.metadata) for item in data if item.score >= THRESHOLD]
 
         if len(ans) == 0:
-            raise empty
+            raise EmptyError
         return ans

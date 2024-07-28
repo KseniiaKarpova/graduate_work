@@ -1,7 +1,7 @@
 from typing import List
 
 from db import BaseVecDB
-from exceptions import created
+from exceptions import Created
 from services.translator import translation
 from shemas import ResponseDB
 from shemas.entity import EntityModel
@@ -29,7 +29,7 @@ class EntityStorage(BaseStorage):
     async def add(self, data: EntityModel):
         collection_name, docs, metadata, ids = self.transform(data)
         await self.database.add(collection_name, docs, metadata, ids)
-        raise created
+        raise Created
 
     async def search(self, collection_name: str, text: str) -> ResponseDB:
         result = await self.database.search(collection_name, text)
