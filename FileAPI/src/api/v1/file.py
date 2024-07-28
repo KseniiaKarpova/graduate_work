@@ -1,5 +1,5 @@
 from core.handlers import require_access_token
-from exceptions import file_not_found
+from exceptions import FileNotFoundError
 from fastapi import APIRouter, Depends, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from models.file import File
@@ -38,7 +38,7 @@ async def download_file(
 ) -> StreamingResponse:
     films = await file_service.download_stream(name)
     if not films:
-        raise file_not_found
+        raise FileNotFoundError
     return films
 
 
@@ -55,5 +55,5 @@ async def download_file_audio(
 ) -> FileResponse:
     films = await file_service.download(name)
     if not films:
-        raise file_not_found
+        raise FileNotFoundError
     return films

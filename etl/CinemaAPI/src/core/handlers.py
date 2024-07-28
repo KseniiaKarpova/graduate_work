@@ -5,7 +5,7 @@ from typing import Optional
 
 from core.config import settings
 from db.redis import get_redis
-from exceptions import forbidden_error, server_error
+from exceptions import ForbiddenError, ServerError
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt
@@ -23,7 +23,7 @@ def decode_token(token: str) -> Optional[dict]:
                 detail='Invalid or expired token.')
         return decoded_token
     except Exception:
-        raise server_error
+        raise ServerError
 
 
 async def jwt_user_data(subject: dict):
@@ -62,7 +62,7 @@ class JWTBearer(HTTPBearer):
         redis = get_redis()
         denied = await redis.get(jti)
         if denied:
-            raise forbidden_error
+            raise ForbiddenError
 
     async def check_credentials(self, credentials: HTTPAuthorizationCredentials):
         if not credentials:

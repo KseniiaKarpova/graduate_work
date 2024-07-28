@@ -3,7 +3,7 @@ from datetime import timedelta
 from aiofiles import tempfile
 from aiohttp import ClientSession
 from db import AbstractStorage
-from exceptions import file_not_found
+from exceptions import FileNotFoundError
 from fastapi import UploadFile
 from miniopy_async import Minio
 from starlette.responses import FileResponse, StreamingResponse
@@ -39,7 +39,7 @@ class MinioStorage(AbstractStorage):
             )
         except Exception as e:
             await session.close()
-            raise file_not_found from e
+            raise FileNotFoundError
 
     async def get(self, bucket: str, path: str, filename: str = "movie.mp4") -> StreamingResponse:
         try:
@@ -51,7 +51,7 @@ class MinioStorage(AbstractStorage):
                 return FileResponse(temp_file.name, media_type='audio/wav', filename=filename)
         except Exception as e:
             await session.close()
-            raise file_not_found from e
+            raise FileNotFoundError
 
     async def get_presigned_url(self, bucket: str, path: str) -> str:
         return await self.client.get_presigned_url('GET', bucket, path, expires=timedelta(days=1),)

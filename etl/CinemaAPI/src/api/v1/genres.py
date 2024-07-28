@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from core.handlers import JwtHandler, require_access_token
-from exceptions import genre_not_found, genres_not_found
+from exceptions import GenreNotFoundError, GenresNotFoundError
 from fastapi import APIRouter, Depends, Request
 from models.genre import Genre
 from services.genres import GenreService, get_genre_service
@@ -22,7 +22,7 @@ async def get_genres(
 ) -> list[Genre]:
     genres = await service.get_data_list(url=str(request.url))
     if not genres:
-        raise genres_not_found
+        raise GenresNotFoundError
     return genres
 
 
@@ -41,5 +41,5 @@ async def get_genre_by_id(
 ) -> Genre:
     genre = await service.get_data_by_id(url=str(request.url), id=str(uuid))
     if not genre:
-        raise genre_not_found
+        raise GenreNotFoundError
     return genre

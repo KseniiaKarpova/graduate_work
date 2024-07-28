@@ -2,7 +2,7 @@ from uuid import UUID
 
 from core.config import QueryParams, settings
 from core.handlers import JwtHandler, require_access_token
-from exceptions import file_not_found, film_not_found, films_not_found
+from exceptions import FileNotFoundError, FilmNotFoundError, FilmsNotFoundError
 from fastapi import APIRouter, Depends, Request
 from models.film import Film, FilmDetail
 from services.film import FilmService, get_film_service
@@ -28,7 +28,7 @@ async def get_film_list(
 ) -> list[Film]:
     films = await film_service.get_data_list(sort, genre, commons.page_number, commons.page_size)
     if not films:
-        raise films_not_found
+        raise FilmsNotFoundError
     return films
 
 
@@ -48,7 +48,7 @@ async def search_films(
 ) -> list[dict[str, Film]]:
     films = await film_service.search_data(query, commons.page_number, commons.page_size)
     if not films:
-        raise films_not_found
+        raise FilmsNotFoundError
     return films
 
 
@@ -68,7 +68,7 @@ async def get_film_details(
 ) -> FilmDetail:
     film = await film_service.get_data_by_id(url=str(request.url), id=str(film_id))
     if not film:
-        raise film_not_found
+        raise FilmNotFoundError
     return film
 
 
@@ -87,10 +87,10 @@ async def download_film(
 ):
     film = await film_service.get_data_by_id(url=str(request.url), id=str(film_id))
     if not film:
-        raise film_not_found
+        raise FileNotFoundError
     file_name = film.get("file")
     if not file_name:
-        raise file_not_found
+        raise FileNotFoundError
     return {
         "url": f'http://{settings.file_api.full_path}/download-stream/{file_name}/'
     }

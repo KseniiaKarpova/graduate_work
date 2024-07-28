@@ -1,5 +1,5 @@
 from db import AbstractStorage
-from exceptions import file_already_exist_error, file_not_found
+from exceptions import FileAlreadyExistError, FileNotFoundError
 from models.file_db import FileDbModel
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -35,7 +35,7 @@ class PostgresStorage(AbstractStorage):
             async with session.begin():
                 session.add(object)
         except IntegrityError:
-            raise file_already_exist_error
+            raise FileAlreadyExistError
 
     async def get(self, short_name):
         try:
@@ -46,4 +46,4 @@ class PostgresStorage(AbstractStorage):
             for i in result:
                 return i
         except Exception:
-            raise file_not_found
+            raise FileNotFoundError

@@ -4,7 +4,7 @@ from typing import Optional
 
 from core.config import settings
 from db.redis import get_redis
-from exceptions import forbidden_error, token_expired, unauthorized, wrong_data
+from exceptions import ForbiddenError, TokenExpiredError, UnauthorizedError, WrongDataError
 from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, jwt
@@ -17,19 +17,19 @@ def decode_token(token: str) -> Optional[dict]:
             token, settings.auth.secret_key, algorithms=[
                 settings.auth.jwt_algorithm])
         if decoded_token['exp'] < time.time():
-            raise forbidden_error
+            raise ForbiddenError
         return decoded_token
     except ExpiredSignatureError:
-        raise token_expired
+        raise TokenExpiredError
     except Exception:
-        raise wrong_data
+        raise WrongDataError
 
 
 async def jwt_user_data(subject: dict):
     subject: dict = json.loads(subject)
     login, uuid = subject.get('login'), subject.get('uuid')
     if not login or not uuid:
-        raise forbidden_error
+        raise ForbiddenError
     return JWTUserData(login=login, uuid=uuid)
 
 
@@ -46,7 +46,7 @@ class JWTBearer(HTTPBearer):
         decoded_token = decode_token(credentials.credentials)
         subject, jti, type = await self.check_fields(decoded_token=decoded_token)
         if type != self.token_type:
-            raise forbidden_error
+            raise ForbiddenError
         return {
             'subject': subject,
             'jti': jti,
@@ -57,20 +57,20 @@ class JWTBearer(HTTPBearer):
         redis = get_redis()
         denied = await redis.get(jti)
         if denied:
-            raise forbidden_error
+            raise ForbiddenError
 
     async def check_credentials(self, credentials: HTTPAuthorizationCredentials):
         if not credentials:
-            raise forbidden_error
+            raise ForbiddenError
         if not credentials.scheme == 'Bearer':
-            raise unauthorized
+            raise UnauthorizedError
 
     async def check_fields(self, decoded_token: dict):
         subject: dict = decoded_token.get('sub')
         jti = decoded_token.get('jti')
         type = decoded_token.get('type')
         if not subject or not jti or not type:
-            raise forbidden_error
+            raise ForbiddenError
         await self.check_denylist(jti=jti)
         return subject, jti, type
 
