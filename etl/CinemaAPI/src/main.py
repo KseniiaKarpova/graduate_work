@@ -7,6 +7,7 @@ from core import config
 from core.logger import LOGGING
 from db import elastic, redis
 from elasticsearch import AsyncElasticsearch
+from middleware import CheckRequest
 from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -63,7 +64,7 @@ async def before_request(request: Request, call_next):
 
 
 FastAPIInstrumentor.instrument_app(app)
-
+app.add_middleware(CheckRequest)
 app.include_router(films.router, prefix='/api/v1/films', tags=['films'])
 app.include_router(genres.router, prefix='/api/v1/genres', tags=['genres'])
 app.include_router(persons.router, prefix='/api/v1/persons', tags=['persons'])
