@@ -35,8 +35,8 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.project_name,
         description="Auth logic",
-        docs_url='/api/openapi',
-        openapi_url='/api/openapi.json',
+        docs_url='/assistant/openapi',
+        openapi_url='/assistant/openapi.json',
         default_response_class=ORJSONResponse,
         lifespan=lifespan
     )

@@ -5,7 +5,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 
 executor = ThreadPoolExecutor(max_workers=3)
-app = FastAPI()
+app = FastAPI(
+    docs_url='/data_transfer/openapi',
+    openapi_url='/data_transfer/openapi.json',
+)
 load_dotenv()
 
 

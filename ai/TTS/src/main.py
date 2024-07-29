@@ -18,8 +18,8 @@ def create_app() -> FastAPI:
     application = FastAPI(
         lifespan=lifespan,
         title='TTS',
-        docs_url='/api/openapi',
-        openapi_url='/api/openapi.json',
+        docs_url='/tts/openapi',
+        openapi_url='/tts/openapi.json',
         default_response_class=ORJSONResponse,
         description='Text to Speach',
         version='0.1.0',

@@ -43,7 +43,7 @@ app = FastAPI(
     title=settings.project_name,
     description="Upload and download files",
     docs_url='/file/openapi',
-    openapi_url='/api/openapi.json',
+    openapi_url='/file/openapi.json',
     default_response_class=ORJSONResponse,
     lifespan=lifespan
 )

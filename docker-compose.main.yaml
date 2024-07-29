@@ -6,6 +6,7 @@ services:
   auth_api:
     container_name: AuthAPI
     command: uvicorn main:app --host 0.0.0.0 --port 3001 --reload
+    restart: on-failure
     env_file:
       - .env
     environment:
@@ -28,6 +29,7 @@ services:
   auth_postgres:
     image: postgres:15.5-alpine3.19
     container_name: auth_postgres
+    restart: on-failure
     env_file:
       - .env
     environment:
@@ -46,7 +48,7 @@ services:
   redis:
     image: redis:7.2.3-alpine3.18
     container_name: redis
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     volumes:
@@ -61,6 +63,7 @@ services:
     container_name: file_api
     command: >
       bash -c "alembic upgrade 657bdb3eea2b && uvicorn main:app --host 0.0.0.0 --port 7070 --reload"
+    restart: on-failure
     env_file:
       - .env
     build:
@@ -79,6 +82,7 @@ services:
   file_postgres:
     image: postgres:15.5-alpine3.19
     container_name: postgres_file_api
+    restart: on-failure
     env_file:
       - .env
     environment:
@@ -103,6 +107,7 @@ services:
 
   assistant_api:
     container_name: assistant_api
+    restart: on-failure
     command: >
       bash -c "uvicorn main:app --host 0.0.0.0 --port 8080 --reload"
     env_file:
@@ -128,6 +133,7 @@ services:
   minio:
     image: minio/minio
     container_name: minio
+    restart: on-failure
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -147,6 +153,7 @@ services:
   nginx:
     image: nginx:1.19.2
     container_name: nginx
+    restart: on-failure
     volumes:
       - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./Nginx/main.conf:/etc/nginx/conf.d/main.conf:ro
@@ -182,6 +189,7 @@ services:
     image: mongo:5.0.21
     hostname: history_db
     container_name: history_db
+    restart: on-failure
     env_file:
       - .env
     environment:
@@ -202,6 +210,7 @@ services:
 
   history_api:
     container_name: HistoryAPI
+    restart: on-failure
     command: uvicorn main:app --host 0.0.0.0 --port 3001 --reload
     env_file:
       - .env
