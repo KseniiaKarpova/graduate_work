@@ -14,6 +14,7 @@ services:
       - POSTGRES_DB=${PG_NAME}
     networks:
       - application_network
+    restart: on-failure
 
 
   elasticsearch:
@@ -27,7 +28,7 @@ services:
       - .env
     volumes:
       - es_data:/usr/share/elasticsearch/data
-    restart: always
+    restart: on-failure
     networks:
       - application_network
 
@@ -41,12 +42,13 @@ services:
       - .env
     networks:
       - application_network
+    restart: on-failure
 
 
   cache:
     image: redis:7.2.3-alpine3.18
     container_name: cache
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     volumes:
@@ -85,6 +87,7 @@ services:
       ES_PORT: ${ES_PORT}
     networks:
       - application_network
+    restart: on-failure
 
 #_____________content______________
   cinema_api:
@@ -113,6 +116,7 @@ services:
         condition: service_started
     networks:
       - application_network
+    restart: on-failure
 
 networks:
   application_network:

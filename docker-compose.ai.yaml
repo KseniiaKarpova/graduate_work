@@ -18,6 +18,7 @@ services:
       dockerfile: Dockerfile
     networks:
       - application_network
+    restart: on-failure
 
 #______________TTS_______________
 
@@ -35,6 +36,7 @@ services:
       dockerfile: Dockerfile
     networks:
       - application_network
+    restart: on-failure
 
 #______________INTENTS_______________
   qdrant:
@@ -45,7 +47,7 @@ services:
         hard: 65535
         soft: 65535
       nproc: 65535
-    restart: always
+    restart: on-failure
     ports:
       - "6333:6333"
     volumes:
@@ -71,11 +73,12 @@ services:
         condition: service_started
     networks:
       - application_network
+    restart: on-failure
 
   redis_intent:
     image: redis:7.2.3-alpine3.18
     container_name: redis_intent
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     volumes:
@@ -86,7 +89,7 @@ services:
   intent_api:
     container_name: intent_api
     command: uvicorn main:app --host 0.0.0.0 --port 3303 --reload
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     environment:
