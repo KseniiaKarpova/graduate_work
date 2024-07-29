@@ -21,7 +21,10 @@ class BaseChatHistoryService(BaseService):
     @abstractmethod
     async def remove_message(self):
         pass
-
+    
+    @abstractmethod
+    async def get_messages(self):
+        pass
 
 class ChatHistoryService(BaseChatHistoryService):
     def __init__(self, storage: ChatHistoryStorage) -> None:

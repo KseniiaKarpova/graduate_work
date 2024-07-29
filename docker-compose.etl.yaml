@@ -69,8 +69,8 @@ services:
         condition: service_started
       elasticsearch:
         condition: service_started
-      text2vec:
-        condition: service_started
+      #text2vec:
+        #condition: service_started
     environment:
       PYTHONPATH: /src
       DB_NAME: ${PG_NAME}

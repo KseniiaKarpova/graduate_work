@@ -42,7 +42,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(
     title=settings.project_name,
     description="Upload and download files",
-    docs_url='/api/openapi',
+    docs_url='/file/openapi',
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse,
     lifespan=lifespan

@@ -149,16 +149,7 @@ services:
     container_name: nginx
     volumes:
       - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./Nginx/auth_api.conf:/etc/nginx/conf.d/auth_api.conf:ro
-      - ./Nginx/file_api.conf:/etc/nginx/conf.d/file_api.conf:ro
-      - ./Nginx/cinema_api.conf:/etc/nginx/conf.d/cinema_api.conf:ro
-      - ./Nginx/tts_api.conf:/etc/nginx/conf.d/tts_api.conf:ro
-      - ./Nginx/text2vec.conf:/etc/nginx/conf.d/text2vec.conf:ro
-      - ./Nginx/intent_api.conf:/etc/nginx/conf.d/intent_api.conf:ro
-      - ./Nginx/asr_api.conf:/etc/nginx/conf.d/asr_api.conf:ro
-      - ./Nginx/trans_data.conf:/etc/nginx/conf.d/trans_data.conf:ro
-      - ./Nginx/assistant_api.conf:/etc/nginx/conf.d/assistant_api.conf:ro
-      - ./Nginx/history_api.conf:/etc/nginx/conf.d/history_api.conf:ro
+      - ./Nginx/main.conf:/etc/nginx/conf.d/main.conf:ro
     depends_on:
       auth_api:
         condition: service_started
@@ -182,6 +173,7 @@ services:
       - "8009:8009"
       - "8010:8010"
       - "8877:8877"
+      - "8000:8000"
     networks:
       - application_network
 
