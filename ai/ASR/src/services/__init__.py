@@ -57,13 +57,18 @@ class MainDetector:
                      sample_rate: int = settings.core.recommended_sample_rate):
         s = 0
         size = settings.vad.split_size
+        print(settings)
         for idx, (start, end) in enumerate(self.frame_generator(audio)):
             if start >= s:
                 frame = audio[start: end]
                 if frame.dtype.kind == 'f':
                     # convert to int16
-                    frame = np.array(frame, dtype=np.int32) * settings.core.max_val
-                    frame = np.clip(frame, -1*settings.core.max_val, settings.core.max_val)
+                    frame = np.array([int(s * settings.core.max_val) for s in frame])
+                    # bound
+                    frame[frame > settings.core.max_val] = settings.core.max_val
+                    frame[frame < -1 * settings.core.max_val] = -1 * settings.core.max_val
+                    # frame = np.array(frame, dtype=np.int32) * settings.core.max_val
+                    # frame = np.clip(frame, -1*settings.core.max_val, settings.core.max_val)
                 is_speech = self.vad.is_speech(frame, sample_rate)
                 if is_speech:
                     s = start + size

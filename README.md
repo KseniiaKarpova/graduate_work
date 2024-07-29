@@ -36,7 +36,7 @@ docker exec file_api alembic upgrade head
 Заполнение базы данных из sqlite в Postgres
 
 ```bash
-curl -XGET http://0.0.0.0:8877/migrate
+curl -XGET http://localhost:8877/migrate
 ```
 
 

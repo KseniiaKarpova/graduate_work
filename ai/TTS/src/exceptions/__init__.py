@@ -29,6 +29,7 @@ ForbiddenError = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="You have been denied access")
 
+
 def return_bad_request(massage: str) -> HTTPException:
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,

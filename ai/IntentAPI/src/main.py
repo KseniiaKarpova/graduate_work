@@ -4,7 +4,7 @@ from api.v1 import bot
 from core.config import settings
 from middleware import CheckRequest
 from db import redis
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from redis.asyncio import Redis
 from services import facade
