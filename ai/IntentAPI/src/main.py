@@ -29,4 +29,4 @@ app = FastAPI(
 
 
 app.add_middleware(CheckRequest)
-app.include_router(bot.router, prefix='/api/v1', tags=['bot'])
+app.include_router(bot.router, prefix='/intent/api/v1', tags=['bot'])

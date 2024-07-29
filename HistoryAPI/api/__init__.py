@@ -1,7 +1,7 @@
 from api.v1 import v1_router
 from fastapi import APIRouter, FastAPI
 
-api_router = APIRouter(prefix='/api')
+api_router = APIRouter(prefix='/history/api')
 api_router.include_router(v1_router)
 
 router = APIRouter()

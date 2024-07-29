@@ -8,7 +8,7 @@ settings = config.APPSettings()
 
 
 class CheckRequest(BaseHTTPMiddleware):
-    async def dispatch(request: Request, call_next):
+    async def dispatch(self, request: Request, call_next):
         user = request.headers.get('X-Forwarded-For')
         result = await RequestLimit().is_over_limit(user=user)
         if result:

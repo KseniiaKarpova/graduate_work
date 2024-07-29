@@ -31,7 +31,7 @@ class Text2VecSettings(BaseSettings):
 
     @property
     def url(self):
-        return f"http://{self.host}:{self.port}/api/v1/[type]/"
+        return f"http://{self.host}:{self.port}/text2vec/api/v1/[type]/"
 
 
 class HistorySettings(BaseSettings):

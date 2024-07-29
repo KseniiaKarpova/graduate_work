@@ -212,6 +212,8 @@ services:
     container_name: HistoryAPI
     restart: on-failure
     command: uvicorn main:app --host 0.0.0.0 --port 3001 --reload
+    ports: 
+      - 3001:3001
     env_file:
       - .env
     environment:

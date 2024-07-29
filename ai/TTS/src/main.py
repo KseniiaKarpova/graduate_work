@@ -30,7 +30,7 @@ def create_app() -> FastAPI:
 
 app = create_app()
 
-app.include_router(tts.router, prefix='/api/v1', tags=['tts'])
+app.include_router(tts.router, prefix='/tts/api/v1', tags=['tts'])
 
 
 if __name__ == '__main__':

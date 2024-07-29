@@ -8,7 +8,7 @@ settings = config.APPSettings()
 
 
 class CheckRequest(BaseHTTPMiddleware):
-    async def dispatch(request: Request, call_next):
+    async def dispatch(self, request: Request, call_next):
         user = request.headers.get('X-Forwarded-For')
         result = await RequestLimit().is_over_limit(user=user)
         if result:
@@ -19,9 +19,6 @@ class CheckRequest(BaseHTTPMiddleware):
 
         response = await call_next(request)
         request_id = request.headers.get('X-Request-Id')
-        if settings.jaeger.enable is False:
-            return response
-        request_id = request.headers.get('request_id')
         if not request_id:
             return ORJSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST, content={

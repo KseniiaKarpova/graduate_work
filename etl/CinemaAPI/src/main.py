@@ -7,7 +7,7 @@ from core import config
 from core.logger import LOGGING
 from db import elastic, redis
 from elasticsearch import AsyncElasticsearch
-from middleware import CheckRequest
+from middleware import CheckRequest, RateLimitMiddleware, JWTMiddleware
 from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -38,36 +38,19 @@ app = FastAPI(
     title=settings.project_name,
     description="Information about films, genres and actors",
     docs_url='/cinema/openapi',
-    openapi_url='/api/openapi.json',
+    openapi_url='/cinema/openapi.json',
     default_response_class=ORJSONResponse,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
-
-
-@app.middleware('http')
-async def before_request(request: Request, call_next):
-    user = request.headers.get('X-Forwarded-For')
-    result = await RequestLimit().is_over_limit(user=user)
-    if result:
-        return ORJSONResponse(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            content={'detail': 'Too many requests'}
-        )
-
-    response = await call_next(request)
-    request_id = request.headers.get('X-Request-Id')
-    if not request_id:
-        return ORJSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST, content={
-                'detail': 'X-Request-Id is required'})
-    return response
 
 
 FastAPIInstrumentor.instrument_app(app)
 app.add_middleware(CheckRequest)
-app.include_router(films.router, prefix='/api/v1/films', tags=['films'])
-app.include_router(genres.router, prefix='/api/v1/genres', tags=['genres'])
-app.include_router(persons.router, prefix='/api/v1/persons', tags=['persons'])
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(JWTMiddleware)
+app.include_router(films.router, prefix='/cinema/api/v1/films', tags=['films'])
+app.include_router(genres.router, prefix='/cinema/api/v1/genres', tags=['genres'])
+app.include_router(persons.router, prefix='/cinema/api/v1/persons', tags=['persons'])
 
 
 if __name__ == '__main__':

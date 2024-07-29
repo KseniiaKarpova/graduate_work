@@ -36,5 +36,5 @@ app = FastAPI(
 
 
 app.add_middleware(CheckRequest)
-app.include_router(intent.router, prefix='/api/v1/intent', tags=['intent'])
-app.include_router(entity.router, prefix='/api/v1/entity', tags=['entity'])
+app.include_router(intent.router, prefix='/text2vec/api/v1/intent', tags=['intent'])
+app.include_router(entity.router, prefix='/text2vec/api/v1/entity', tags=['entity'])

@@ -94,7 +94,7 @@ services:
     container_name: cinema_api
     image: cinema_api
     restart: on-failure
-    command: gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:7000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 7000 --reload
     env_file:
       - .env
     environment:

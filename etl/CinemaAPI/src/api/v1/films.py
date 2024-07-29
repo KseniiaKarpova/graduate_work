@@ -64,7 +64,6 @@ async def get_film_details(
         request: Request,
         film_id: UUID,
         film_service: FilmService = Depends(get_film_service),
-        jwt_handler: JwtHandler = Depends(require_access_token)
 ) -> FilmDetail:
     film = await film_service.get_data_by_id(url=str(request.url), id=str(film_id))
     if not film:

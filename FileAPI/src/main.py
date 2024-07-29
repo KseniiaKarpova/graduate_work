@@ -49,7 +49,7 @@ app = FastAPI(
 )
 
 
-app.include_router(file.router, prefix='/api/v1', tags=['file'])
+app.include_router(file.router, prefix='/file/api/v1', tags=['file'])
 
 
 if __name__ == '__main__':

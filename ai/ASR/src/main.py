@@ -12,4 +12,4 @@ app = FastAPI(
 )
 
 
-app.include_router(bot.router, prefix='/api/v1/audio', tags=['audio'])
+app.include_router(bot.router, prefix='/asr/api/v1/audio', tags=['audio'])
