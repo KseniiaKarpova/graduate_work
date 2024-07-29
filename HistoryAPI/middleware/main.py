@@ -4,6 +4,7 @@ from core import config
 from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 from middleware.request_log import RequestLogMiddleware
+from middleware import CheckRequest
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -25,3 +26,4 @@ def setup_middleware(app: FastAPI):
     )
 
     app.add_middleware(RequestLogMiddleware)
+    app.add_middleware(CheckRequest)

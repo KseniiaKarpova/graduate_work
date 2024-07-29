@@ -1,5 +1,3 @@
-from contextlib import asynccontextmanager
-
 from api.v1 import bot
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
@@ -12,5 +10,6 @@ app = FastAPI(
     openapi_url='/asr/openapi.json',
     default_response_class=ORJSONResponse
 )
+
 
 app.include_router(bot.router, prefix='/api/v1/audio', tags=['audio'])

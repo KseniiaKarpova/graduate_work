@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 from core.logger import logger
 from core import settings
-from exceptions import Error_big_file, Error_file_error
+from exceptions import BigFileError, FileError
 from fastapi import Depends, UploadFile
 from services import MainDetector
 
@@ -13,19 +13,20 @@ class Detector(MainDetector):
 
     async def file_to_frame(self, upload_file: UploadFile):
         if upload_file.size > settings.core.max_size:
-            raise Error_big_file
+            raise BigFileError
 
         if not (upload_file.content_type in settings.core.asr_core_valid_content_type):
-            raise Error_file_error
+            raise FileError
         try:
             audio_bytes = await upload_file.read()
             samples = np.frombuffer(audio_bytes, dtype=np.int16)
             return samples.astype(np.float32) / settings.core.max_val
 
         except ValueError:
-            raise Error_file_error
-        except Exception:
-            raise Error_file_error
+            raise FileError
+        except Exception as e:
+            logger.error(e)
+            raise FileError
 
 
 class Service:

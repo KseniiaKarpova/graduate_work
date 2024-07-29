@@ -1,26 +1,33 @@
 from fastapi import HTTPException, status
 
-unauthorized = HTTPException(
+UnauthorizedError = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Bad username or password")
 
-try_retry_after = HTTPException(
+TryRetryAfterError = HTTPException(
     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     detail="Извините, сервер временно недоступен, попробуйте попозже.")
 
 
-forbidden_error = HTTPException(
+ForbiddenError = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="You have been denied access")
 
-server_error = HTTPException(
+ServerError = HTTPException(
     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     detail="Sorry...")
 
-wrong_data = HTTPException(
+WrongDataError = HTTPException(
     status_code=status.HTTP_406_NOT_ACCEPTABLE,
     detail="wrong data")
 
+TokenExpiredError = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="Token expired")
+
+ForbiddenError = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="You have been denied access")
 
 def return_bad_request(massage: str) -> HTTPException:
     raise HTTPException(

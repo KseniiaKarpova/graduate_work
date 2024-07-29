@@ -1,7 +1,7 @@
 from typing import List
 
 from db import BaseVecDB
-from exceptions import created
+from exceptions import Created
 from shemas import ResponseDB
 from shemas.intent import IntentModel
 from storages import BaseStorage
@@ -23,7 +23,7 @@ class IntentStorage(BaseStorage):
     async def add(self, data: IntentModel):
         collection_name, docs, metadata, ids = self.transform(data)
         await self.database.add(collection_name, docs, metadata, ids)
-        raise created
+        raise Created
 
     async def search(self, text: str) -> ResponseDB:
         result = await self.database.search(collection_name=self.collection_name,

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from core.config import QueryParams
 from core.handlers import JwtHandler, require_access_token
-from exceptions import films_not_found, person_not_found, persons_not_found
+from exceptions import FilmsNotFoundError, PersonNotFoundError, PersonsNotFoundError
 from fastapi import APIRouter, Depends, Request
 from models.film import Film
 from models.person import Person, PersonDetails
@@ -30,7 +30,7 @@ async def search_person(
                                         page_number=commons.page_number,
                                         page_size=commons.page_size)
     if not persons:
-        raise persons_not_found
+        raise PersonsNotFoundError
     return persons
 
 
@@ -49,7 +49,7 @@ async def get_person_by_id(
 ) -> Person:
     person = await service.get_data_by_id(url=str(request.url), id=str(uuid))
     if not person:
-        raise person_not_found
+        raise PersonNotFoundError
     return person
 
 
@@ -68,5 +68,5 @@ async def get_films_by_person(
 ) -> list[dict[str, Film]]:
     films = await service.get_person_films(url=str(request.url), id=str(uuid))
     if not films:
-        raise films_not_found
+        raise FilmsNotFoundError
     return films

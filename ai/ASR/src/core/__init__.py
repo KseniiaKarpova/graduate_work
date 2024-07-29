@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List, Set
 
 class SettingsModelV1(BaseSettings):
     path: str = 'models/v1/'
@@ -27,8 +27,8 @@ class SettingsModelV2(BaseSettings):
 
 class AsrCoreSettings(BaseSettings):
     max_size: int = ...
-    valid_content_type: List[str] = ...
-    valid_sample_rate: List[int] = ...
+    valid_content_type: Set[str] = ...
+    valid_sample_rate: Set[int] = ...
     recommended_sample_rate: int = ...
     max_val: int = ...
     model_config: str = SettingsConfigDict(env_prefix='asr_core_')
@@ -42,7 +42,7 @@ class VadSettings(BaseSettings):
     model_config: str = SettingsConfigDict(env_prefix='asr_vad_')
 
 class Settings(BaseSettings):
-    basemodel = SettingsModelV2()
+    basemodel: SettingsModelV2= SettingsModelV2()
     core: AsrCoreSettings = AsrCoreSettings()
     vad: VadSettings = VadSettings()
 
