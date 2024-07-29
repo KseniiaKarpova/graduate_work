@@ -1,10 +1,7 @@
-import logging
 from contextlib import asynccontextmanager
 
-import uvicorn
 from api.v1 import file
 from core import config
-from core.logger import LOGGING
 from db import minio, postgres, redis
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
@@ -50,11 +47,3 @@ app = FastAPI(
 
 
 app.include_router(file.router, prefix='/api/v1', tags=['file'])
-
-
-if __name__ == '__main__':
-    uvicorn.run(
-        app,
-        log_config=LOGGING,
-        log_level=logging.DEBUG,
-    )

@@ -1,17 +1,13 @@
-import logging
 from contextlib import asynccontextmanager
 
 from middleware import CheckRequest
-import uvicorn
 from api.v1 import entity, intent
 from core.config import settings
-from core.logger import LOGGING
 from db import qdrant, redis
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from redis.asyncio import Redis
 from services import translator
-from utils.constraint import RequestLimit
 
 
 @asynccontextmanager

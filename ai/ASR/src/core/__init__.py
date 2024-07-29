@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List, Set
+from typing import Set
+
 
 class SettingsModelV1(BaseSettings):
     path: str = 'models/v1/'
@@ -41,9 +42,11 @@ class VadSettings(BaseSettings):
     aggressiveness_mode: int = ...
     model_config: str = SettingsConfigDict(env_prefix='asr_vad_')
 
+
 class Settings(BaseSettings):
-    basemodel: SettingsModelV2= SettingsModelV2()
+    basemodel: SettingsModelV2 = SettingsModelV2()
     core: AsrCoreSettings = AsrCoreSettings()
     vad: VadSettings = VadSettings()
+
 
 settings = Settings()

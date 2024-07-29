@@ -1,20 +1,17 @@
-import logging
 from contextlib import asynccontextmanager
 
-import uvicorn
 from api import setup_routers
 from async_fastapi_jwt_auth.exceptions import AuthJWTException
-from core import config, logger
+from core import config
 from core.logger import setup_root_logger
 from db import init_db, mongo, redis
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, ORJSONResponse
 from fastapi_pagination import add_pagination
 from middleware.main import setup_middleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from redis.asyncio import Redis
-from utils.constraint import RequestLimit
 from utils.jaeger import configure_tracer
 
 settings = config.APPSettings()
@@ -55,7 +52,6 @@ app = create_app()
 
 
 FastAPIInstrumentor.instrument_app(app)
-
 
 
 @app.exception_handler(AuthJWTException)

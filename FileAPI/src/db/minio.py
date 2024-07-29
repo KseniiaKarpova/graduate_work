@@ -37,7 +37,7 @@ class MinioStorage(AbstractStorage):
                 content=s3_stream(),
                 headers={'Content-Disposition': f'filename="{filename}"'},
             )
-        except Exception as e:
+        except Exception:
             await session.close()
             raise FileNotFoundError
 
@@ -49,7 +49,7 @@ class MinioStorage(AbstractStorage):
             async with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=False) as temp_file:
                 await temp_file.write(result_bytes)
                 return FileResponse(temp_file.name, media_type='audio/wav', filename=filename)
-        except Exception as e:
+        except Exception:
             await session.close()
             raise FileNotFoundError
 

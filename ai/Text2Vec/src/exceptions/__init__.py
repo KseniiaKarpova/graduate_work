@@ -28,7 +28,7 @@ NotFoundError = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="Not found")
 
-TryRetryError= HTTPException(
+TryRetryError = HTTPException(
     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     detail="Извините, сервер временно недоступен, попробуйте попозже.")
 

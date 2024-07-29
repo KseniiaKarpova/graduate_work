@@ -1,6 +1,5 @@
 from contextlib import asynccontextmanager
 
-import uvicorn
 from api.v1 import tts
 from core.config import settings
 from fastapi import FastAPI
@@ -24,17 +23,9 @@ def create_app() -> FastAPI:
         description='Text to Speach',
         version='0.1.0',
     )
-    # setup_middleware(application)
     return application
 
 
 app = create_app()
 
 app.include_router(tts.router, prefix='/api/v1', tags=['tts'])
-
-
-if __name__ == '__main__':
-    uvicorn.run(
-        app,
-        reload=True,
-    )
