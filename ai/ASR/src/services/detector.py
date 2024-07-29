@@ -15,7 +15,7 @@ class Detector(MainDetector):
         if upload_file.size > settings.core.max_size:
             raise BigFileError
 
-        if not (upload_file.content_type in settings.core.asr_core_valid_content_type):
+        if not (upload_file.content_type in settings.core.valid_content_type):
             raise FileError
         try:
             audio_bytes = await upload_file.read()

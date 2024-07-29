@@ -31,7 +31,7 @@ class FileAPISettings(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}{self.url}"
+        return f"http://{self.host}:{self.port}{self.url}/file"
 
 
 class HasherSettings(BaseSettings):
@@ -65,7 +65,7 @@ class ASR_API(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}/api/v1/audio/transcript/1/long"
+        return f"http://{self.host}:{self.port}/asr/api/v1/audio/transcript/1/long"
 
 
 class INTENT_API(BaseSettings):
@@ -75,7 +75,7 @@ class INTENT_API(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}/api/v1/ask"
+        return f"http://{self.host}:{self.port}/intent/api/v1/ask"
 
 
 class TTS_API(BaseSettings):
@@ -85,7 +85,7 @@ class TTS_API(BaseSettings):
 
     @property
     def path(self) -> str:
-        return f"http://{self.host}:{self.port}/api/v1/text2speach"
+        return f"http://{self.host}:{self.port}/tts/api/v1/text2speach"
 
 
 class APPSettings(BaseSettings):

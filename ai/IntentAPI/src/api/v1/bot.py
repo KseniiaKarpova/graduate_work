@@ -11,7 +11,7 @@ router = APIRouter()
 )
 async def ask(
     request: Request,
-    text: str = "",
+    text: str,
     jwt_handler: JwtHandler = Depends(require_access_token),
 ) -> AnswerModel:
     user = await jwt_handler.get_current_user()

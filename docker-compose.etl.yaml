@@ -38,6 +38,9 @@ services:
       context: etl/data_transfer_sqlite_to_pg
       dockerfile: Dockerfile
     container_name: data_transfer
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8877 --reload
+    volumes:
+      - ./etl/data_transfer_sqlite_to_pg:/app
     restart: on-failure
     env_file:
       - .env
