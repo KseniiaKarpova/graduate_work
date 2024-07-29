@@ -20,10 +20,16 @@ services:
         condition: service_started
     networks:
       - application_network
-    mem_limit: 512m
-    mem_reservation: 128M
-    cpus: 0.5
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 50M
+          pids: 1
+        reservations:
+          cpus: '0.25'
+          memory: 20M
+    restart: on-failure
 
   auth_postgres:
     image: postgres:15.5-alpine3.19
@@ -39,14 +45,21 @@ services:
       - auth_pg_data:/var/lib/postgresql/data
     networks:
       - application_network
-    mem_limit: 512m
-    mem_reservation: 128M
-    cpus: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+          pids: 1
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    restart: on-failure
 
   redis:
     image: redis:7.2.3-alpine3.18
     container_name: redis
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     volumes:
@@ -75,6 +88,7 @@ services:
       - ./FileAPI/src:/app
     networks:
       - application_network
+    restart: on-failure
 
   file_postgres:
     image: postgres:15.5-alpine3.19
@@ -97,6 +111,7 @@ services:
       retries: 3
     networks:
       - application_network
+    restart: on-failure
 
 
 #___________Assistant api________
@@ -123,6 +138,7 @@ services:
       - ./AssistantAPI:/src
     networks:
       - application_network
+    restart: on-failure
 
 
   minio:
@@ -141,6 +157,7 @@ services:
     command: server --console-address ":9001" /data
     networks:
       - application_network
+    restart: on-failure
 
 
 #______________Nginx_______________
@@ -184,6 +201,7 @@ services:
       - "8877:8877"
     networks:
       - application_network
+    restart: on-failure
 
   #____________Mongo________________
   history_db:
@@ -204,9 +222,16 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    mem_limit: 512m
-    mem_reservation: 128M
-    cpus: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+          pids: 1
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    restart: on-failure
 
   history_api:
     container_name: HistoryAPI
@@ -229,9 +254,16 @@ services:
       
     networks:
       - application_network
-    mem_limit: 512m
-    mem_reservation: 128M
-    cpus: 0.5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+          pids: 1
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    restart: on-failure
 
 
 
